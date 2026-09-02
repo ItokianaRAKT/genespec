@@ -87,6 +87,7 @@ export interface SchemaProperty {
   format?: string
   description: string
   required: boolean
+  nullable?: boolean
   defaultValue?: string
   enum?: string[]
 }

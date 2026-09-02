@@ -159,8 +159,8 @@ function generateSecuritySchemes(security: OpenAPISpec['security']): string {
   for (const sec of security) {
     lines.push(`${indent(3)}${yamlValue(sec.name)}:`)
     lines.push(`${indent(4)}type: ${sec.type}`)
-    if (sec.type === 'http' && sec.scheme) {
-      lines.push(`${indent(4)}scheme: ${sec.scheme}`)
+    if (sec.type === 'http') {
+      lines.push(`${indent(4)}scheme: ${sec.scheme || 'bearer'}`)
       if (sec.bearerFormat) lines.push(`${indent(4)}bearerFormat: ${yamlValue(sec.bearerFormat)}`)
     }
     if (sec.type === 'apiKey' && sec.in) {
@@ -189,6 +189,7 @@ function generateSchemas(schemas: OpenAPISpec['schemas']): string {
       lines.push(`${indent(5)}${yamlValue(prop.name)}:`)
       lines.push(`${indent(6)}type: ${prop.type}`)
       if (prop.format) lines.push(`${indent(6)}format: ${yamlValue(prop.format)}`)
+      if (prop.nullable) lines.push(`${indent(6)}nullable: true`)
       if (prop.description) lines.push(`${indent(6)}description: ${yamlValue(prop.description)}`)
       if (prop.defaultValue) lines.push(`${indent(6)}default: ${yamlValue(prop.defaultValue)}`)
       if (prop.enum && prop.enum.length > 0) {
