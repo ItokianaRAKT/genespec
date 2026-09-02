@@ -1,0 +1,224 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-app: #f9fafb;
+    --bg-sidebar: #ffffff;
+    --bg-card: rgba(243, 244, 246, 0.8);
+    --bg-card-solid: #f3f4f6;
+    --bg-input: #ffffff;
+    --bg-hover: rgba(243, 244, 246, 0.8);
+    --bg-active: rgba(229, 231, 235, 0.8);
+    --bg-badge: #e5e7eb;
+    --bg-parameter: rgba(249, 250, 251, 0.8);
+    --bg-empty: rgba(243, 244, 246, 0.5);
+    --bg-tag-inactive: rgba(229, 231, 235, 0.5);
+    --bg-checkbox: #d1d5db;
+    --border-primary: #e5e7eb;
+    --border-secondary: rgba(209, 213, 219, 0.8);
+    --border-card: rgba(209, 213, 219, 0.8);
+    --border-dashed: rgba(209, 213, 219, 0.5);
+    --border-active: rgba(156, 163, 175, 0.5);
+    --text-heading: #111827;
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
+    --text-muted: #6b7280;
+    --text-faint: #9ca3af;
+    --text-faintest: #d1d5db;
+    --yaml-bg: #f9fafb;
+    --yaml-border: #e5e7eb;
+    --yaml-text: #374151;
+    --method-get: #059669;
+    --method-get-bg: rgba(16, 185, 129, 0.1);
+    --method-post: #2563eb;
+    --method-post-bg: rgba(59, 130, 246, 0.1);
+    --method-put: #d97706;
+    --method-put-bg: rgba(245, 158, 11, 0.1);
+    --method-patch: #ea580c;
+    --method-patch-bg: rgba(249, 115, 22, 0.1);
+    --method-delete: #dc2626;
+    --method-delete-bg: rgba(239, 68, 68, 0.1);
+    --method-default: #6b7280;
+    --method-default-bg: rgba(107, 114, 128, 0.1);
+    --accent: #4f46e5;
+    --accent-hover: #4338ca;
+    --accent-ring: rgba(79, 70, 229, 0.5);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  [data-theme="dark"] {
+    --bg-app: #030712;
+    --bg-sidebar: #111827;
+    --bg-card: rgba(31, 41, 55, 0.5);
+    --bg-card-solid: #1f2937;
+    --bg-input: rgba(31, 41, 55, 0.8);
+    --bg-hover: rgba(31, 41, 55, 0.8);
+    --bg-active: rgba(55, 65, 81, 0.8);
+    --bg-badge: #374151;
+    --bg-parameter: rgba(17, 24, 39, 0.5);
+    --bg-empty: rgba(31, 41, 55, 0.3);
+    --bg-tag-inactive: rgba(55, 65, 81, 0.5);
+    --bg-checkbox: #374151;
+    --border-primary: #1f2937;
+    --border-secondary: rgba(55, 65, 81, 0.5);
+    --border-card: rgba(55, 65, 81, 0.5);
+    --border-dashed: rgba(55, 65, 81, 0.3);
+    --border-active: rgba(75, 85, 99, 0.5);
+    --text-heading: #ffffff;
+    --text-primary: #ffffff;
+    --text-secondary: #d1d5db;
+    --text-muted: #9ca3af;
+    --text-faint: #6b7280;
+    --text-faintest: #4b5563;
+    --yaml-bg: #0a0f1e;
+    --yaml-border: #1f2937;
+    --yaml-text: #d1d5db;
+    --method-get: #34d399;
+    --method-get-bg: rgba(52, 211, 153, 0.15);
+    --method-post: #60a5fa;
+    --method-post-bg: rgba(96, 165, 250, 0.15);
+    --method-put: #fbbf24;
+    --method-put-bg: rgba(251, 191, 36, 0.15);
+    --method-patch: #fb923c;
+    --method-patch-bg: rgba(251, 146, 60, 0.15);
+    --method-delete: #f87171;
+    --method-delete-bg: rgba(248, 113, 113, 0.15);
+    --method-default: #9ca3af;
+    --method-default-bg: rgba(156, 163, 175, 0.15);
+    --accent: #6366f1;
+    --accent-hover: #818cf8;
+    --accent-ring: rgba(99, 102, 241, 0.5);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--bg-active);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-faint);
+  }
+}
+
+@layer components {
+  .input-field {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-secondary);
+    border-radius: 0.5rem;
+    color: var(--text-primary);
+    outline: none;
+    transition: all 0.15s;
+  }
+
+  .input-field::placeholder {
+    color: var(--text-faint);
+  }
+
+  .input-field:focus {
+    border-color: var(--accent-ring);
+    box-shadow: 0 0 0 2px var(--accent-ring);
+  }
+
+  .input-field-sm {
+    width: 100%;
+    padding: 0.375rem 0.625rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-secondary);
+    border-radius: 0.375rem;
+    color: var(--text-primary);
+    outline: none;
+    transition: all 0.15s;
+  }
+
+  .input-field-sm::placeholder {
+    color: var(--text-faint);
+  }
+
+  .input-field-sm:focus {
+    border-color: var(--accent-ring);
+    box-shadow: 0 0 0 2px var(--accent-ring);
+  }
+
+  .btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    background-color: var(--accent);
+    color: white;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.15s;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--accent-hover);
+  }
+
+  .btn-small {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1rem;
+    background-color: var(--bg-card-solid);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-secondary);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.15s;
+  }
+
+  .btn-small:hover {
+    background-color: var(--bg-hover);
+  }
+
+  select.input-field {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2rem;
+  }
+
+  select.input-field-sm {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    padding-right: 1.5rem;
+  }
+}
