@@ -4,7 +4,7 @@ export const defaultSpec: OpenAPISpec = {
   info: {
     title: '',
     description: '',
-    version: '',
+    version: '1.0.0',
     contact: {
       name: '',
       email: '',
