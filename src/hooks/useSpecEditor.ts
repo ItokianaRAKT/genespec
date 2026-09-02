@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import type { OpenAPISpec, SidebarSection, Server, SecurityScheme, Tag, Endpoint, Parameter, Response, Schema, SchemaProperty } from '../models/openapi'
 import { defaultSpec } from '../services/mockData'
 import { parseYamlToSpec } from '../services/yamlParser'
@@ -7,11 +7,35 @@ function uid(): string {
   return Math.random().toString(36).slice(2, 10)
 }
 
+function loadSpec(): OpenAPISpec {
+  try {
+    const saved = localStorage.getItem('genespec-spec')
+    if (saved) return JSON.parse(saved)
+  } catch { /* ignore */ }
+  return defaultSpec
+}
+
+function loadActiveSection(): SidebarSection {
+  try {
+    const saved = localStorage.getItem('genespec-active-section') as SidebarSection
+    if (saved) return saved
+  } catch { /* ignore */ }
+  return 'overview'
+}
+
 export function useSpecEditor() {
-  const [spec, setSpec] = useState<OpenAPISpec>(defaultSpec)
-  const [activeSection, setActiveSection] = useState<SidebarSection>('overview')
+  const [spec, setSpec] = useState<OpenAPISpec>(loadSpec)
+  const [activeSection, setActiveSection] = useState<SidebarSection>(loadActiveSection)
   const [selectedEndpointId, setSelectedEndpointId] = useState<string | null>(null)
   const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null)
+
+  useEffect(() => {
+    localStorage.setItem('genespec-spec', JSON.stringify(spec))
+  }, [spec])
+
+  useEffect(() => {
+    localStorage.setItem('genespec-active-section', activeSection)
+  }, [activeSection])
 
   const updateInfo = useCallback((field: string, value: string) => {
     setSpec(prev => ({
