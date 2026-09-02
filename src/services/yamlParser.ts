@@ -80,7 +80,9 @@ function parseEndpoints(data: any): Endpoint[] {
         deprecated: ep.deprecated || false,
         tags: ep.tags || [],
         parameters: parseParameters(ep.parameters),
-        requestBody: ep.requestBody,
+        requestBody: ep.requestBody
+          ? { ...ep.requestBody, content: ep.requestBody.content || {} }
+          : undefined,
         responses: parseResponses(ep.responses),
       })
     }
@@ -117,7 +119,16 @@ function parseSchemas(data: any): Schema[] {
 }
 
 export function parseYamlToSpec(yamlContent: string): OpenAPISpec {
-  const data = yaml.load(yamlContent) as any
+  let data: any
+  try {
+    data = yaml.load(yamlContent)
+  } catch {
+    throw new Error('Invalid YAML format')
+  }
+
+  if (!data || typeof data !== 'object') {
+    throw new Error('Invalid OpenAPI spec')
+  }
 
   const info = {
     title: data.info?.title || '',

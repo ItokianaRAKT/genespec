@@ -4,11 +4,12 @@ function indent(level: number): string {
   return '  '.repeat(level)
 }
 
-function yamlValue(val: string): string {
-  if (/[:{}\[\],&*?|>!%@`#'"\n]/.test(val) || val === '' || /^\d/.test(val)) {
-    return `"${val.replace(/"/g, '\\"')}"`
+function yamlValue(val: unknown): string {
+  const str = String(val ?? '')
+  if (/[:{}\[\],&*?|>!%@`#'"\n]/.test(str) || str === '' || /^\d/.test(str)) {
+    return `"${str.replace(/"/g, '\\"')}"`
   }
-  return val
+  return str
 }
 
 function generateInfo(info: OpenAPISpec['info']): string {
@@ -112,15 +113,17 @@ function generatePaths(endpoints: OpenAPISpec['endpoints']): string {
         lines.push(`${indent(3)}requestBody:`)
         if (ep.requestBody.description) lines.push(`${indent(4)}description: ${yamlValue(ep.requestBody.description)}`)
         if (ep.requestBody.required) lines.push(`${indent(4)}required: true`)
-        lines.push(`${indent(4)}content:`)
-        for (const [mediaType, media] of Object.entries(ep.requestBody.content)) {
-          lines.push(`${indent(5)}${yamlValue(mediaType)}:`)
-          if (media.schema) {
-            lines.push(`${indent(6)}schema:`)
-            if (media.schema.$ref) lines.push(`${indent(7)}$ref: ${yamlValue(media.schema.$ref)}`)
-            else if (media.schema.type) lines.push(`${indent(7)}type: ${media.schema.type}`)
+        if (ep.requestBody.content && Object.keys(ep.requestBody.content).length > 0) {
+          lines.push(`${indent(4)}content:`)
+          for (const [mediaType, media] of Object.entries(ep.requestBody.content)) {
+            lines.push(`${indent(5)}${yamlValue(mediaType)}:`)
+            if (media.schema) {
+              lines.push(`${indent(6)}schema:`)
+              if (media.schema.$ref) lines.push(`${indent(7)}$ref: ${yamlValue(media.schema.$ref)}`)
+              else if (media.schema.type) lines.push(`${indent(7)}type: ${media.schema.type}`)
+            }
+            if (media.example) lines.push(`${indent(6)}example: ${yamlValue(String(media.example))}`)
           }
-          if (media.example) lines.push(`${indent(6)}example: ${yamlValue(String(media.example))}`)
         }
       }
       lines.push(`${indent(3)}responses:`)

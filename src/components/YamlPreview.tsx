@@ -13,6 +13,7 @@ export function YamlPreview({ spec, onImport }: YamlPreviewProps) {
   const lineCount = yaml.split('\n').length
   const [isEditing, setIsEditing] = useState(false)
   const [editValue, setEditValue] = useState('')
+  const [parseError, setParseError] = useState('')
   const { confirm } = useConfirm()
 
   const handleCopy = () => {
@@ -36,11 +37,19 @@ export function YamlPreview({ spec, onImport }: YamlPreviewProps) {
 
   const handleImport = async () => {
     if (editValue.trim()) {
-      const confirmed = await confirm('Import this spec? Current data will be replaced.')
+      setParseError('')
+      const confirmed = await confirm('Import this spec? Current data will be replaced.', {
+        confirmLabel: 'Import',
+        confirmColor: 'var(--accent)',
+      })
       if (confirmed) {
-        onImport(editValue)
-        setIsEditing(false)
-        setEditValue('')
+        try {
+          onImport(editValue)
+          setIsEditing(false)
+          setEditValue('')
+        } catch (e: any) {
+          setParseError(e.message || 'Failed to parse YAML')
+        }
       }
     }
   }
@@ -48,6 +57,7 @@ export function YamlPreview({ spec, onImport }: YamlPreviewProps) {
   const handleCancel = () => {
     setIsEditing(false)
     setEditValue('')
+    setParseError('')
   }
 
   return (
@@ -121,17 +131,27 @@ export function YamlPreview({ spec, onImport }: YamlPreviewProps) {
       </div>
       <div className="flex-1 overflow-auto">
         {isEditing ? (
-          <textarea
-            className="w-full h-full p-4 text-[12px] leading-relaxed font-mono resize-none focus:outline-none"
-            style={{
-              backgroundColor: 'var(--yaml-bg)',
-              color: 'var(--yaml-text)',
-            }}
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            placeholder="Paste your OpenAPI YAML here..."
-            autoFocus
-          />
+          <div className="flex flex-col h-full">
+            {parseError && (
+              <div
+                className="px-4 py-2 text-xs"
+                style={{ backgroundColor: 'var(--method-delete-bg)', color: 'var(--method-delete)' }}
+              >
+                {parseError}
+              </div>
+            )}
+            <textarea
+              className="flex-1 w-full p-4 text-[12px] leading-relaxed font-mono resize-none focus:outline-none"
+              style={{
+                backgroundColor: 'var(--yaml-bg)',
+                color: 'var(--yaml-text)',
+              }}
+              value={editValue}
+              onChange={(e) => { setEditValue(e.target.value); setParseError('') }}
+              placeholder="Paste your OpenAPI YAML here..."
+              autoFocus
+            />
+          </div>
         ) : (
           <pre
             className="p-4 text-[12px] leading-relaxed font-mono whitespace-pre"
