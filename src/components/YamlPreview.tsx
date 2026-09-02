@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { OpenAPISpec } from '../models/openapi'
 import { generateYaml } from '../services/yamlGenerator'
+import { useConfirm } from './ConfirmContext'
 
 interface YamlPreviewProps {
   spec: OpenAPISpec
@@ -12,6 +13,7 @@ export function YamlPreview({ spec, onImport }: YamlPreviewProps) {
   const lineCount = yaml.split('\n').length
   const [isEditing, setIsEditing] = useState(false)
   const [editValue, setEditValue] = useState('')
+  const { confirm } = useConfirm()
 
   const handleCopy = () => {
     navigator.clipboard.writeText(yaml)
@@ -32,11 +34,14 @@ export function YamlPreview({ spec, onImport }: YamlPreviewProps) {
     setEditValue('')
   }
 
-  const handleImport = () => {
+  const handleImport = async () => {
     if (editValue.trim()) {
-      onImport(editValue)
-      setIsEditing(false)
-      setEditValue('')
+      const confirmed = await confirm('Import this spec? Current data will be replaced.')
+      if (confirmed) {
+        onImport(editValue)
+        setIsEditing(false)
+        setEditValue('')
+      }
     }
   }
 

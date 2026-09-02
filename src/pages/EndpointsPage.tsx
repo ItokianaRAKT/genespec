@@ -52,7 +52,7 @@ export function EndpointsPage({
   onRemoveResponse,
 }: Props) {
   const selected = endpoints.find(e => e.id === selectedEndpointId)
-  const confirm = useConfirm()
+  const { confirm } = useConfirm()
 
   const handleRemoveEndpoint = async (id: string, path: string, method: string) => {
     const confirmed = await confirm(`Delete endpoint ${method} ${path || '/'}?`)
@@ -61,10 +61,10 @@ export function EndpointsPage({
     }
   }
 
-  const handleRemoveParameter = async (endpointId: string, paramName: string) => {
+  const handleRemoveParameter = async (endpointId: string, paramId: string, paramName: string) => {
     const confirmed = await confirm(`Delete parameter "${paramName || 'untitled'}"?`)
     if (confirmed) {
-      onRemoveParameter(endpointId, paramName)
+      onRemoveParameter(endpointId, paramId)
     }
   }
 

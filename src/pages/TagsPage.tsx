@@ -9,7 +9,7 @@ interface Props {
 }
 
 export function TagsPage({ tags, onAdd, onUpdate, onRemove }: Props) {
-  const confirm = useConfirm()
+  const { confirm } = useConfirm()
 
   const handleRemove = async (id: string, name: string) => {
     const confirmed = await confirm(`Delete tag "${name || 'untitled'}"?`)
@@ -54,7 +54,7 @@ export function TagsPage({ tags, onAdd, onUpdate, onRemove }: Props) {
                 <h3 className="text-sm font-semibold" style={{ color: 'var(--text-heading)' }}>Tag</h3>
                 <button
                   onClick={() => handleRemove(tag.id, tag.name)}
-                  className="text-xs px-2 py-1 rounded transition-colors"
+                  className="inline-flex items-center justify-center p-1.5 rounded transition-colors cursor-pointer"
                   style={{ color: 'var(--text-faint)' }}
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

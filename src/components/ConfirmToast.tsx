@@ -25,18 +25,22 @@ export function ConfirmToast({ message, onConfirm, onCancel }: ConfirmToastProps
 
   return (
     <div
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-200 ease-out"
+      className="fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-200"
       style={{
         opacity: isVisible ? 1 : 0,
-        transform: `translateX(-50%) translateY(${isVisible ? 0 : 20}px)`,
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        backdropFilter: isVisible ? 'blur(4px)' : 'none',
       }}
+      onClick={handleClose}
     >
       <div
-        className="flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border"
+        className="flex flex-col items-center gap-4 px-6 py-5 rounded-xl shadow-xl border transition-all duration-200"
         style={{
           backgroundColor: 'var(--bg-card-solid)',
           borderColor: 'var(--border-card)',
+          transform: `scale(${isVisible ? 1 : 0.95})`,
         }}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-2">
           <div
@@ -44,16 +48,16 @@ export function ConfirmToast({ message, onConfirm, onCancel }: ConfirmToastProps
             style={{ backgroundColor: 'var(--method-delete)' }}
           />
           <span
-            className="text-sm font-medium"
+            className="text-base font-medium"
             style={{ color: 'var(--text-primary)' }}
           >
             {message}
           </span>
         </div>
-        <div className="flex items-center gap-2 ml-2">
+        <div className="flex items-center gap-3">
           <button
             onClick={handleConfirm}
-            className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors"
+            className="px-4 py-2 text-sm font-medium rounded-lg transition-colors"
             style={{
               backgroundColor: 'var(--method-delete)',
               color: 'white',
@@ -63,7 +67,7 @@ export function ConfirmToast({ message, onConfirm, onCancel }: ConfirmToastProps
           </button>
           <button
             onClick={handleClose}
-            className="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors"
+            className="px-4 py-2 text-sm font-medium rounded-lg transition-colors"
             style={{
               backgroundColor: 'var(--bg-hover)',
               color: 'var(--text-secondary)',

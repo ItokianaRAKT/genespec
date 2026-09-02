@@ -27,7 +27,7 @@ export function SchemasPage({
   onRemoveProperty,
 }: Props) {
   const selected = schemas.find(s => s.id === selectedSchemaId)
-  const confirm = useConfirm()
+  const { confirm } = useConfirm()
 
   const handleRemoveSchema = async (id: string, name: string) => {
     const confirmed = await confirm(`Delete schema "${name || 'untitled'}"?`)
