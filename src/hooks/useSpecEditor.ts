@@ -180,6 +180,29 @@ export function useSpecEditor() {
     }))
   }, [])
 
+  const updateResponseContent = useCallback((endpointId: string, index: number, mediaType: string, ref: string) => {
+    setSpec(prev => ({
+      ...prev,
+      endpoints: prev.endpoints.map(e =>
+        e.id === endpointId
+          ? {
+              ...e,
+              responses: e.responses.map((r, i) =>
+                i === index
+                  ? {
+                      ...r,
+                      content: ref
+                        ? { [mediaType]: { schema: { $ref: ref } } }
+                        : { [mediaType]: { schema: { type: 'object' } } },
+                    }
+                  : r
+              ),
+            }
+          : e
+      ),
+    }))
+  }, [])
+
   const removeResponse = useCallback((endpointId: string, index: number) => {
     setSpec(prev => ({
       ...prev,
@@ -274,6 +297,7 @@ export function useSpecEditor() {
     removeParameter,
     addResponse,
     updateResponse,
+    updateResponseContent,
     removeResponse,
     addSchema,
     updateSchema,

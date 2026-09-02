@@ -13,6 +13,7 @@ interface Props {
   onRemoveParameter: (endpointId: string, paramId: string) => void
   onAddResponse: (endpointId: string) => void
   onUpdateResponse: (endpointId: string, index: number, field: string, value: string) => void
+  onUpdateResponseContent: (endpointId: string, index: number, mediaType: string, ref: string) => void
   onRemoveResponse: (endpointId: string, index: number) => void
 }
 
@@ -49,6 +50,7 @@ export function EndpointsPage({
   onRemoveParameter,
   onAddResponse,
   onUpdateResponse,
+  onUpdateResponseContent,
   onRemoveResponse,
 }: Props) {
   const selected = endpoints.find(e => e.id === selectedEndpointId)
@@ -383,6 +385,14 @@ export function EndpointsPage({
                           value={res.description}
                           onChange={e => onUpdateResponse(selected.id, idx, 'description', e.target.value)}
                           placeholder="description"
+                        />
+                      </div>
+                      <div className="mt-2">
+                        <input
+                          className="input-field-sm font-mono"
+                          value={res.content?.['application/json']?.schema?.$ref || ''}
+                          onChange={e => onUpdateResponseContent(selected.id, idx, 'application/json', e.target.value)}
+                          placeholder="$ref: #/components/schemas/Error"
                         />
                       </div>
                     </div>
