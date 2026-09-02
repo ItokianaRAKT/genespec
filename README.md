@@ -78,7 +78,3 @@ npm run preview
 ├── tsconfig.json
 └── vite.config.js
 ```
-
-## License
-
-MIT
