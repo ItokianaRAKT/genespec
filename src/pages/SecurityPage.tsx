@@ -1,4 +1,5 @@
 import type { SecurityScheme } from '../models/openapi'
+import { useConfirm } from '../components/ConfirmContext'
 
 interface Props {
   security: SecurityScheme[]
@@ -8,8 +9,11 @@ interface Props {
 }
 
 export function SecurityPage({ security, onAdd, onUpdate, onRemove }: Props) {
-  const handleRemove = (id: string, name: string) => {
-    if (window.confirm(`Delete security scheme "${name || 'untitled'}"?`)) {
+  const confirm = useConfirm()
+
+  const handleRemove = async (id: string, name: string) => {
+    const confirmed = await confirm(`Delete security scheme "${name || 'untitled'}"?`)
+    if (confirmed) {
       onRemove(id)
     }
   }

@@ -1,4 +1,5 @@
 import type { Server } from '../models/openapi'
+import { useConfirm } from '../components/ConfirmContext'
 
 interface Props {
   servers: Server[]
@@ -8,8 +9,11 @@ interface Props {
 }
 
 export function ServersPage({ servers, onAdd, onUpdate, onRemove }: Props) {
-  const handleRemove = (id: string, url: string) => {
-    if (window.confirm(`Delete server "${url || 'untitled'}"?`)) {
+  const confirm = useConfirm()
+
+  const handleRemove = async (id: string, url: string) => {
+    const confirmed = await confirm(`Delete server "${url || 'untitled'}"?`)
+    if (confirmed) {
       onRemove(id)
     }
   }

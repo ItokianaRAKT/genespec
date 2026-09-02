@@ -1,4 +1,5 @@
 import type { Tag } from '../models/openapi'
+import { useConfirm } from '../components/ConfirmContext'
 
 interface Props {
   tags: Tag[]
@@ -8,8 +9,11 @@ interface Props {
 }
 
 export function TagsPage({ tags, onAdd, onUpdate, onRemove }: Props) {
-  const handleRemove = (id: string, name: string) => {
-    if (window.confirm(`Delete tag "${name || 'untitled'}"?`)) {
+  const confirm = useConfirm()
+
+  const handleRemove = async (id: string, name: string) => {
+    const confirmed = await confirm(`Delete tag "${name || 'untitled'}"?`)
+    if (confirmed) {
       onRemove(id)
     }
   }

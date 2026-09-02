@@ -1,4 +1,5 @@
 import type { Schema } from '../models/openapi'
+import { useConfirm } from '../components/ConfirmContext'
 
 interface Props {
   schemas: Schema[]
@@ -26,15 +27,18 @@ export function SchemasPage({
   onRemoveProperty,
 }: Props) {
   const selected = schemas.find(s => s.id === selectedSchemaId)
+  const confirm = useConfirm()
 
-  const handleRemoveSchema = (id: string, name: string) => {
-    if (window.confirm(`Delete schema "${name || 'untitled'}"?`)) {
+  const handleRemoveSchema = async (id: string, name: string) => {
+    const confirmed = await confirm(`Delete schema "${name || 'untitled'}"?`)
+    if (confirmed) {
       onRemove(id)
     }
   }
 
-  const handleRemoveProperty = (schemaId: string, propName: string) => {
-    if (window.confirm(`Delete property "${propName || 'untitled'}"?`)) {
+  const handleRemoveProperty = async (schemaId: string, propName: string) => {
+    const confirmed = await confirm(`Delete property "${propName || 'untitled'}"?`)
+    if (confirmed) {
       onRemoveProperty(schemaId, propName)
     }
   }

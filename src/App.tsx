@@ -1,6 +1,7 @@
 import { useSpecEditor } from './hooks/useSpecEditor'
 import { Sidebar } from './components/Sidebar'
 import { YamlPreview } from './components/YamlPreview'
+import { ConfirmProvider } from './components/ConfirmContext'
 import { OverviewPage } from './pages/OverviewPage'
 import { InfoPage } from './pages/InfoPage'
 import { ServersPage } from './pages/ServersPage'
@@ -123,22 +124,24 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ backgroundColor: 'var(--bg-app)' }}>
-      <Sidebar
-        spec={spec}
-        activeSection={activeSection}
-        onSectionChange={setActiveSection}
-        selectedEndpointId={selectedEndpointId}
-        onSelectEndpoint={setSelectedEndpointId}
-        selectedSchemaId={selectedSchemaId}
-        onSelectSchema={setSelectedSchemaId}
-      />
-      <div className="flex-1 overflow-y-auto">
-        {renderPage()}
+    <ConfirmProvider>
+      <div className="flex h-screen overflow-hidden" style={{ backgroundColor: 'var(--bg-app)' }}>
+        <Sidebar
+          spec={spec}
+          activeSection={activeSection}
+          onSectionChange={setActiveSection}
+          selectedEndpointId={selectedEndpointId}
+          onSelectEndpoint={setSelectedEndpointId}
+          selectedSchemaId={selectedSchemaId}
+          onSelectSchema={setSelectedSchemaId}
+        />
+        <div className="flex-1 overflow-y-auto">
+          {renderPage()}
+        </div>
+        <div className="w-[420px] flex-shrink-0 hidden lg:block border-l" style={{ borderColor: 'var(--border-primary)' }}>
+          <YamlPreview spec={spec} onImport={importSpec} />
+        </div>
       </div>
-      <div className="w-[420px] flex-shrink-0 hidden lg:block border-l" style={{ borderColor: 'var(--border-primary)' }}>
-        <YamlPreview spec={spec} onImport={importSpec} />
-      </div>
-    </div>
+    </ConfirmProvider>
   )
 }

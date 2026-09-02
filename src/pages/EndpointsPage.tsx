@@ -1,4 +1,5 @@
 import type { Endpoint } from '../models/openapi'
+import { useConfirm } from '../components/ConfirmContext'
 
 interface Props {
   endpoints: Endpoint[]
@@ -51,21 +52,25 @@ export function EndpointsPage({
   onRemoveResponse,
 }: Props) {
   const selected = endpoints.find(e => e.id === selectedEndpointId)
+  const confirm = useConfirm()
 
-  const handleRemoveEndpoint = (id: string, path: string, method: string) => {
-    if (window.confirm(`Delete endpoint ${method} ${path || '/'}?`)) {
+  const handleRemoveEndpoint = async (id: string, path: string, method: string) => {
+    const confirmed = await confirm(`Delete endpoint ${method} ${path || '/'}?`)
+    if (confirmed) {
       onRemove(id)
     }
   }
 
-  const handleRemoveParameter = (endpointId: string, paramName: string) => {
-    if (window.confirm(`Delete parameter "${paramName || 'untitled'}"?`)) {
+  const handleRemoveParameter = async (endpointId: string, paramName: string) => {
+    const confirmed = await confirm(`Delete parameter "${paramName || 'untitled'}"?`)
+    if (confirmed) {
       onRemoveParameter(endpointId, paramName)
     }
   }
 
-  const handleRemoveResponse = (endpointId: string, index: number, statusCode: string) => {
-    if (window.confirm(`Delete response ${statusCode}?`)) {
+  const handleRemoveResponse = async (endpointId: string, index: number, statusCode: string) => {
+    const confirmed = await confirm(`Delete response ${statusCode}?`)
+    if (confirmed) {
       onRemoveResponse(endpointId, index)
     }
   }
