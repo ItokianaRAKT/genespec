@@ -39,6 +39,7 @@ export default function App() {
     removeParameter,
     addResponse,
     updateResponse,
+    updateResponseContent,
     removeResponse,
     addSchema,
     updateSchema,
@@ -103,6 +104,7 @@ export default function App() {
             onRemoveParameter={removeParameter}
             onAddResponse={addResponse}
             onUpdateResponse={updateResponse}
+            onUpdateResponseContent={updateResponseContent}
             onRemoveResponse={removeResponse}
           />
         )
