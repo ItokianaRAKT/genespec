@@ -45,6 +45,7 @@ export default function App() {
     addSchemaProperty,
     updateSchemaProperty,
     removeSchemaProperty,
+    importSpec,
   } = useSpecEditor()
 
   const renderPage = () => {
@@ -136,7 +137,7 @@ export default function App() {
         {renderPage()}
       </div>
       <div className="w-[420px] flex-shrink-0 hidden lg:block border-l" style={{ borderColor: 'var(--border-primary)' }}>
-        <YamlPreview spec={spec} />
+        <YamlPreview spec={spec} onImport={importSpec} />
       </div>
     </div>
   )

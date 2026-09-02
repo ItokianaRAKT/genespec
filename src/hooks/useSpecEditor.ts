@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import type { OpenAPISpec, SidebarSection, Server, SecurityScheme, Tag, Endpoint, Parameter, Response, Schema, SchemaProperty } from '../models/openapi'
 import { defaultSpec } from '../services/mockData'
+import { parseYamlToSpec } from '../services/yamlParser'
 
 function uid(): string {
   return Math.random().toString(36).slice(2, 10)
@@ -34,8 +35,8 @@ export function useSpecEditor() {
   }, [])
 
   const addServer = useCallback(() => {
-    const server: Server = { id: uid(), url: 'https://api.example.com', description: '' }
-    setSpec(prev => ({ ...prev, servers: [...prev.servers, server] }))
+    const server: Server = { id: uid(), url: '', description: '' }
+    setSpec(prev => ({ ...prev, servers: [server, ...prev.servers] }))
   }, [])
 
   const updateServer = useCallback((id: string, field: string, value: string) => {
@@ -51,7 +52,7 @@ export function useSpecEditor() {
 
   const addSecurityScheme = useCallback(() => {
     const sec: SecurityScheme = { id: uid(), name: '', type: 'http', scheme: 'bearer' }
-    setSpec(prev => ({ ...prev, security: [...prev.security, sec] }))
+    setSpec(prev => ({ ...prev, security: [sec, ...prev.security] }))
   }, [])
 
   const updateSecurityScheme = useCallback((id: string, field: string, value: string) => {
@@ -67,7 +68,7 @@ export function useSpecEditor() {
 
   const addTag = useCallback(() => {
     const tag: Tag = { id: uid(), name: '', description: '' }
-    setSpec(prev => ({ ...prev, tags: [...prev.tags, tag] }))
+    setSpec(prev => ({ ...prev, tags: [tag, ...prev.tags] }))
   }, [])
 
   const updateTag = useCallback((id: string, field: string, value: string) => {
@@ -86,7 +87,7 @@ export function useSpecEditor() {
       id: uid(), method: 'GET', path: '/', summary: '', description: '',
       operationId: '', deprecated: false, tags: [], parameters: [], responses: [],
     }
-    setSpec(prev => ({ ...prev, endpoints: [...prev.endpoints, ep] }))
+    setSpec(prev => ({ ...prev, endpoints: [ep, ...prev.endpoints] }))
     setSelectedEndpointId(ep.id)
   }, [])
 
@@ -107,7 +108,7 @@ export function useSpecEditor() {
     setSpec(prev => ({
       ...prev,
       endpoints: prev.endpoints.map(e =>
-        e.id === endpointId ? { ...e, parameters: [...e.parameters, param] } : e
+        e.id === endpointId ? { ...e, parameters: [param, ...e.parameters] } : e
       ),
     }))
   }, [])
@@ -135,11 +136,11 @@ export function useSpecEditor() {
   }, [])
 
   const addResponse = useCallback((endpointId: string) => {
-    const res: Response = { statusCode: '200', description: 'OK' }
+    const res: Response = { statusCode: '200', description: '' }
     setSpec(prev => ({
       ...prev,
       endpoints: prev.endpoints.map(e =>
-        e.id === endpointId ? { ...e, responses: [...e.responses, res] } : e
+        e.id === endpointId ? { ...e, responses: [res, ...e.responses] } : e
       ),
     }))
   }, [])
@@ -168,7 +169,7 @@ export function useSpecEditor() {
 
   const addSchema = useCallback(() => {
     const schema: Schema = { id: uid(), name: '', description: '', properties: [] }
-    setSpec(prev => ({ ...prev, schemas: [...prev.schemas, schema] }))
+    setSpec(prev => ({ ...prev, schemas: [schema, ...prev.schemas] }))
     setSelectedSchemaId(schema.id)
   }, [])
 
@@ -189,7 +190,7 @@ export function useSpecEditor() {
     setSpec(prev => ({
       ...prev,
       schemas: prev.schemas.map(s =>
-        s.id === schemaId ? { ...s, properties: [...s.properties, prop] } : s
+        s.id === schemaId ? { ...s, properties: [prop, ...s.properties] } : s
       ),
     }))
   }, [])
@@ -214,6 +215,11 @@ export function useSpecEditor() {
           : s
       ),
     }))
+  }, [])
+
+  const importSpec = useCallback((yamlContent: string) => {
+    const parsed = parseYamlToSpec(yamlContent)
+    setSpec(parsed)
   }, [])
 
   return {
@@ -251,5 +257,6 @@ export function useSpecEditor() {
     addSchemaProperty,
     updateSchemaProperty,
     removeSchemaProperty,
+    importSpec,
   }
 }

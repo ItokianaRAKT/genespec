@@ -13,7 +13,7 @@ function yamlValue(val: string): string {
 
 function generateInfo(info: OpenAPISpec['info']): string {
   const lines: string[] = []
-  lines.push('openapi: "3.1.0"')
+  lines.push('openapi: "3.0.3"')
   lines.push('info:')
   lines.push(`${indent(1)}title: ${yamlValue(info.title)}`)
   if (info.description) lines.push(`${indent(1)}description: ${yamlValue(info.description)}`)
