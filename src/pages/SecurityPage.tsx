@@ -8,6 +8,11 @@ interface Props {
 }
 
 export function SecurityPage({ security, onAdd, onUpdate, onRemove }: Props) {
+  const handleRemove = (id: string, name: string) => {
+    if (window.confirm(`Delete security scheme "${name || 'untitled'}"?`)) {
+      onRemove(id)
+    }
+  }
   return (
     <div className="p-8 space-y-8 max-w-4xl">
       <div className="flex items-center justify-between">
@@ -44,7 +49,7 @@ export function SecurityPage({ security, onAdd, onUpdate, onRemove }: Props) {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-semibold" style={{ color: 'var(--text-heading)' }}>Security Scheme</h3>
                 <button
-                  onClick={() => onRemove(sec.id)}
+                  onClick={() => handleRemove(sec.id, sec.name)}
                   className="text-xs px-2 py-1 rounded transition-colors"
                   style={{ color: 'var(--text-faint)' }}
                 >

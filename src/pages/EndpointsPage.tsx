@@ -52,6 +52,24 @@ export function EndpointsPage({
 }: Props) {
   const selected = endpoints.find(e => e.id === selectedEndpointId)
 
+  const handleRemoveEndpoint = (id: string, path: string, method: string) => {
+    if (window.confirm(`Delete endpoint ${method} ${path || '/'}?`)) {
+      onRemove(id)
+    }
+  }
+
+  const handleRemoveParameter = (endpointId: string, paramName: string) => {
+    if (window.confirm(`Delete parameter "${paramName || 'untitled'}"?`)) {
+      onRemoveParameter(endpointId, paramName)
+    }
+  }
+
+  const handleRemoveResponse = (endpointId: string, index: number, statusCode: string) => {
+    if (window.confirm(`Delete response ${statusCode}?`)) {
+      onRemoveResponse(endpointId, index)
+    }
+  }
+
   return (
     <div className="flex h-full">
       <div
@@ -102,7 +120,7 @@ export function EndpointsPage({
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold" style={{ color: 'var(--text-heading)' }}>Edit Endpoint</h2>
               <button
-                onClick={() => onRemove(selected.id)}
+                onClick={() => handleRemoveEndpoint(selected.id, selected.path, selected.method)}
                 className="btn-small"
                 style={{ color: 'var(--method-delete)' }}
               >
@@ -212,7 +230,7 @@ export function EndpointsPage({
                     >
                       <div className="flex items-center justify-between mb-3">
                         <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Parameter</span>
-                        <button onClick={() => onRemoveParameter(selected.id, param.id)} style={{ color: 'var(--text-faint)' }}>
+                        <button onClick={() => handleRemoveParameter(selected.id, param.id, param.name)} style={{ color: 'var(--text-faint)' }}>
                           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                           </svg>
@@ -342,7 +360,7 @@ export function EndpointsPage({
                     >
                       <div className="flex items-center justify-between mb-3">
                         <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Response</span>
-                        <button onClick={() => onRemoveResponse(selected.id, idx)} style={{ color: 'var(--text-faint)' }}>
+                        <button onClick={() => handleRemoveResponse(selected.id, idx, res.statusCode)} style={{ color: 'var(--text-faint)' }}>
                           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                           </svg>

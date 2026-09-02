@@ -27,6 +27,18 @@ export function SchemasPage({
 }: Props) {
   const selected = schemas.find(s => s.id === selectedSchemaId)
 
+  const handleRemoveSchema = (id: string, name: string) => {
+    if (window.confirm(`Delete schema "${name || 'untitled'}"?`)) {
+      onRemove(id)
+    }
+  }
+
+  const handleRemoveProperty = (schemaId: string, propName: string) => {
+    if (window.confirm(`Delete property "${propName || 'untitled'}"?`)) {
+      onRemoveProperty(schemaId, propName)
+    }
+  }
+
   return (
     <div className="flex h-full">
       <div
@@ -74,7 +86,7 @@ export function SchemasPage({
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold" style={{ color: 'var(--text-heading)' }}>Edit Schema</h2>
               <button
-                onClick={() => onRemove(selected.id)}
+                onClick={() => handleRemoveSchema(selected.id, selected.name)}
                 className="btn-small"
                 style={{ color: 'var(--method-delete)' }}
               >
@@ -128,7 +140,7 @@ export function SchemasPage({
                     >
                       <div className="flex items-center justify-between mb-3">
                         <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Property</span>
-                        <button onClick={() => onRemoveProperty(selected.id, prop.id)} style={{ color: 'var(--text-faint)' }}>
+                        <button onClick={() => handleRemoveProperty(selected.id, prop.id, prop.name)} style={{ color: 'var(--text-faint)' }}>
                           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                           </svg>
