@@ -20,4 +20,7 @@ export const defaultSpec: OpenAPISpec = {
   security: [],
   endpoints: [],
   schemas: [],
+  responses: [],
+  parameters: [],
+  requestBodies: [],
 }

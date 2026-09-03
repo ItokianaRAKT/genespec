@@ -206,15 +206,88 @@ function generateSchemas(schemas: OpenAPISpec['schemas']): string {
   return lines.join('\n')
 }
 
+function generateReusableResponses(responses: OpenAPISpec['responses']): string {
+  if (responses.length === 0) return ''
+  const lines: string[] = []
+  lines.push(`${indent(2)}responses:`)
+  for (const res of responses) {
+    lines.push(`${indent(3)}${yamlValue(res.name)}:`)
+    lines.push(`${indent(4)}description: ${yamlValue(res.description)}`)
+    if (res.content && Object.keys(res.content).length > 0) {
+      lines.push(`${indent(4)}content:`)
+      for (const [mediaType, media] of Object.entries(res.content)) {
+        lines.push(`${indent(5)}${yamlValue(mediaType)}:`)
+        if (media.schema) {
+          lines.push(`${indent(6)}schema:`)
+          if (media.schema.$ref) lines.push(`${indent(7)}$ref: ${yamlValue(media.schema.$ref)}`)
+          else if (media.schema.type) lines.push(`${indent(7)}type: ${media.schema.type}`)
+        }
+      }
+    }
+  }
+  return lines.join('\n')
+}
+
+function generateReusableParameters(parameters: OpenAPISpec['parameters']): string {
+  if (parameters.length === 0) return ''
+  const lines: string[] = []
+  lines.push(`${indent(2)}parameters:`)
+  for (const param of parameters) {
+    lines.push(`${indent(3)}${yamlValue(param.name)}:`)
+    lines.push(`${indent(4)}name: ${yamlValue(param.name)}`)
+    lines.push(`${indent(4)}in: ${param.in}`)
+    if (param.description) lines.push(`${indent(4)}description: ${yamlValue(param.description)}`)
+    if (param.required) lines.push(`${indent(4)}required: true`)
+    lines.push(`${indent(4)}schema:`)
+    lines.push(`${indent(5)}type: ${param.type}`)
+    if (param.format) lines.push(`${indent(5)}format: ${yamlValue(param.format)}`)
+    if (param.defaultValue) lines.push(`${indent(5)}default: ${yamlValue(param.defaultValue)}`)
+    if (param.enum && param.enum.length > 0) {
+      lines.push(`${indent(5)}enum:`)
+      for (const e of param.enum) lines.push(`${indent(6)}- ${yamlValue(e)}`)
+    }
+  }
+  return lines.join('\n')
+}
+
+function generateReusableRequestBodies(requestBodies: OpenAPISpec['requestBodies']): string {
+  if (requestBodies.length === 0) return ''
+  const lines: string[] = []
+  lines.push(`${indent(2)}requestBodies:`)
+  for (const body of requestBodies) {
+    lines.push(`${indent(3)}${yamlValue(body.name)}:`)
+    if (body.description) lines.push(`${indent(4)}description: ${yamlValue(body.description)}`)
+    if (body.required) lines.push(`${indent(4)}required: true`)
+    if (body.content && Object.keys(body.content).length > 0) {
+      lines.push(`${indent(4)}content:`)
+      for (const [mediaType, media] of Object.entries(body.content)) {
+        lines.push(`${indent(5)}${yamlValue(mediaType)}:`)
+        if (media.schema) {
+          lines.push(`${indent(6)}schema:`)
+          if (media.schema.$ref) lines.push(`${indent(7)}$ref: ${yamlValue(media.schema.$ref)}`)
+          else if (media.schema.type) lines.push(`${indent(7)}type: ${media.schema.type}`)
+        }
+      }
+    }
+  }
+  return lines.join('\n')
+}
+
 function generateComponents(spec: OpenAPISpec): string {
   const hasSchemas = spec.schemas.length > 0
   const hasSecurity = spec.security.length > 0
-  if (!hasSchemas && !hasSecurity) return ''
+  const hasResponses = spec.responses.length > 0
+  const hasParameters = spec.parameters.length > 0
+  const hasRequestBodies = spec.requestBodies.length > 0
+  if (!hasSchemas && !hasSecurity && !hasResponses && !hasParameters && !hasRequestBodies) return ''
   const lines: string[] = []
   lines.push('')
   lines.push('components:')
   if (hasSecurity) lines.push(generateSecuritySchemes(spec.security))
   if (hasSchemas) lines.push(generateSchemas(spec.schemas))
+  if (hasResponses) lines.push(generateReusableResponses(spec.responses))
+  if (hasParameters) lines.push(generateReusableParameters(spec.parameters))
+  if (hasRequestBodies) lines.push(generateReusableRequestBodies(spec.requestBodies))
   return lines.join('\n')
 }
 

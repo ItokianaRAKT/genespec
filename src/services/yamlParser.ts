@@ -1,5 +1,5 @@
 import * as yaml from 'js-yaml'
-import type { OpenAPISpec, Server, SecurityScheme, Tag, Endpoint, Parameter, Response, Schema, SchemaProperty } from '../models/openapi'
+import type { OpenAPISpec, Server, SecurityScheme, Tag, Endpoint, Parameter, Response, Schema, SchemaProperty, ReusableResponse, ReusableParameter, ReusableRequestBody } from '../models/openapi'
 
 function uid(): string {
   return Math.random().toString(36).slice(2, 10)
@@ -249,6 +249,43 @@ function parseSchemas(data: any, root: any): Schema[] {
   })
 }
 
+function parseReusableResponses(data: any): ReusableResponse[] {
+  if (!data || typeof data !== 'object') return []
+  return Object.entries(data).map(([name, res]: [string, any]) => ({
+    id: uid(),
+    name,
+    statusCode: name,
+    description: res?.description || '',
+    content: res?.content,
+  }))
+}
+
+function parseReusableParameters(data: any): ReusableParameter[] {
+  if (!data || typeof data !== 'object') return []
+  return Object.entries(data).map(([name, param]: [string, any]) => ({
+    id: uid(),
+    name: param.name || name,
+    in: param.in || 'query',
+    description: param.description || '',
+    required: param.required || false,
+    type: safeString(param.schema?.type) || 'string',
+    format: safeString(param.schema?.format),
+    defaultValue: param.schema?.default,
+    enum: param.schema?.enum,
+  }))
+}
+
+function parseReusableRequestBodies(data: any): ReusableRequestBody[] {
+  if (!data || typeof data !== 'object') return []
+  return Object.entries(data).map(([name, body]: [string, any]) => ({
+    id: uid(),
+    name,
+    description: body?.description || '',
+    required: body?.required || false,
+    content: body?.content || {},
+  }))
+}
+
 export function parseYamlToSpec(yamlContent: string): OpenAPISpec {
   let data: any
   try {
@@ -283,5 +320,8 @@ export function parseYamlToSpec(yamlContent: string): OpenAPISpec {
     security: parseSecuritySchemes(data.components?.securitySchemes),
     endpoints: parseEndpoints(data.paths, data),
     schemas: parseSchemas(data.components?.schemas, data),
+    responses: parseReusableResponses(data.components?.responses),
+    parameters: parseReusableParameters(data.components?.parameters),
+    requestBodies: parseReusableRequestBodies(data.components?.requestBodies),
   }
 }
