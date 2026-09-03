@@ -24,10 +24,14 @@ function loadSpec(): OpenAPISpec {
   return defaultSpec
 }
 
+const validSections: SidebarSection[] = ['overview', 'info', 'servers', 'security', 'tags', 'endpoints', 'schemas', 'responses', 'parameters', 'requestBodies']
+
 function loadActiveSection(): SidebarSection {
   try {
-    const saved = localStorage.getItem('genespec-active-section') as SidebarSection
-    if (saved) return saved
+    const saved = localStorage.getItem('genespec-active-section')
+    if (saved && validSections.includes(saved as SidebarSection)) {
+      return saved as SidebarSection
+    }
   } catch { /* ignore */ }
   return 'overview'
 }
