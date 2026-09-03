@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import type { SidebarSection } from '../models/openapi'
 import type { OpenAPISpec } from '../models/openapi'
 import { useTheme } from '../contexts/ThemeContext'
@@ -74,14 +74,6 @@ export function Sidebar({
       return next
     })
   }
-
-  useEffect(() => {
-    setExpandedSections(prev => {
-      const next = new Set(prev)
-      next.add(activeSection)
-      return next
-    })
-  }, [activeSection])
 
   return (
     <div
@@ -263,15 +255,9 @@ export function Sidebar({
                   color: selectedReusableResponseId === r.id ? 'var(--text-heading)' : 'var(--text-secondary)',
                 }}
               >
-                <span
-                  className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded"
-                  style={{
-                    backgroundColor: r.statusCode.startsWith('2') ? 'var(--method-get-bg)' : r.statusCode.startsWith('4') ? 'var(--method-delete-bg)' : 'var(--method-default-bg)',
-                    color: r.statusCode.startsWith('2') ? 'var(--method-get)' : r.statusCode.startsWith('4') ? 'var(--method-delete)' : 'var(--method-default)',
-                  }}
-                >
-                  {r.statusCode || '---'}
-                </span>
+                <svg className="w-4 h-4 flex-shrink-0 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
                 <span className="truncate">{r.name || 'Unnamed'}</span>
               </button>
             ))}
@@ -313,12 +299,10 @@ export function Sidebar({
                   color: selectedReusableParameterId === p.id ? 'var(--text-heading)' : 'var(--text-secondary)',
                 }}
               >
-                <span
-                  className="text-[10px] font-mono px-1.5 py-0.5 rounded"
-                  style={{ backgroundColor: 'var(--bg-badge)', color: 'var(--text-muted)' }}
-                >
-                  {p.in}
-                </span>
+                <svg className="w-4 h-4 flex-shrink-0 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
                 <span className="truncate">{p.name || 'Unnamed'}</span>
               </button>
             ))}

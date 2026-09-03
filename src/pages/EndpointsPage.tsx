@@ -327,7 +327,7 @@ export function EndpointsPage({
                   />
                   <input
                     className="input-field-sm font-mono"
-                    value={selected.requestBody?.content?.['application/json']?.schema?.$ref || ''}
+                    value={selected.requestBody?.content?.['application/json']?.schema?.$ref || '#/components/'}
                     onChange={e => onUpdate(selected.id, 'requestBody', {
                       ...selected.requestBody,
                       required: selected.requestBody?.required || false,
@@ -339,7 +339,7 @@ export function EndpointsPage({
                         },
                       },
                     })}
-                    placeholder="$ref: #/components/schemas/User"
+                    placeholder="$ref: '#/components/schemas/User'"
                   />
                 </div>
               </div>
@@ -390,9 +390,9 @@ export function EndpointsPage({
                       <div className="mt-2">
                         <input
                           className="input-field-sm font-mono"
-                          value={res.content?.['application/json']?.schema?.$ref || ''}
+                          value={res.content?.['application/json']?.schema?.$ref || '#/components/'}
                           onChange={e => onUpdateResponseContent(selected.id, idx, 'application/json', e.target.value)}
-                          placeholder="$ref: #/components/schemas/Error"
+                          placeholder="$ref: '#/components/schemas/Error'"
                         />
                       </div>
                     </div>
