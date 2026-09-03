@@ -197,7 +197,7 @@ export default function App() {
         <div className="flex-1 overflow-y-auto">
           {renderPage()}
         </div>
-        <div className="w-[420px] flex-shrink-0 hidden lg:block border-l" style={{ borderColor: 'var(--border-primary)' }}>
+        <div className="w-[420px] flex-shrink-0 hidden lg:block border-l h-full" style={{ borderColor: 'var(--border-primary)' }}>
           <YamlPreview spec={spec} onImport={importSpec} />
         </div>
       </div>
