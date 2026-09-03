@@ -102,7 +102,6 @@ export interface Schema {
 export interface ReusableResponse {
   id: string
   name: string
-  statusCode: string
   description: string
   content?: Record<string, MediaType>
 }

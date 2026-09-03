@@ -254,7 +254,6 @@ function parseReusableResponses(data: any): ReusableResponse[] {
   return Object.entries(data).map(([name, res]: [string, any]) => ({
     id: uid(),
     name,
-    statusCode: name,
     description: res?.description || '',
     content: res?.content,
   }))
