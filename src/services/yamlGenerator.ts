@@ -12,6 +12,10 @@ function yamlValue(val: unknown): string {
   return str
 }
 
+function isValidRef(ref: string | undefined): boolean {
+  return !!ref && ref.trim() !== '' && ref.trim() !== '#/components/'
+}
+
 function generateInfo(info: OpenAPISpec['info']): string {
   const lines: string[] = []
   lines.push('openapi: "3.0.3"')
@@ -116,15 +120,21 @@ function generatePaths(endpoints: OpenAPISpec['endpoints']): string {
         if (ep.requestBody.description) lines.push(`${indent(4)}description: ${yamlValue(ep.requestBody.description)}`)
         if (ep.requestBody.required) lines.push(`${indent(4)}required: true`)
         if (ep.requestBody.content && Object.keys(ep.requestBody.content).length > 0) {
-          lines.push(`${indent(4)}content:`)
-          for (const [mediaType, media] of Object.entries(ep.requestBody.content)) {
-            lines.push(`${indent(5)}${yamlValue(mediaType)}:`)
-            if (media.schema) {
-              lines.push(`${indent(6)}schema:`)
-              if (media.schema.$ref) lines.push(`${indent(7)}$ref: ${yamlValue(media.schema.$ref)}`)
-              else if (media.schema.type) lines.push(`${indent(7)}type: ${media.schema.type}`)
+          const hasValidContent = Object.values(ep.requestBody.content).some(
+            media => media.schema?.$ref ? isValidRef(media.schema.$ref) : media.schema?.type
+          )
+          if (hasValidContent) {
+            lines.push(`${indent(4)}content:`)
+            for (const [mediaType, media] of Object.entries(ep.requestBody.content)) {
+              if (media.schema?.$ref && !isValidRef(media.schema.$ref)) continue
+              lines.push(`${indent(5)}${yamlValue(mediaType)}:`)
+              if (media.schema) {
+                lines.push(`${indent(6)}schema:`)
+                if (media.schema.$ref) lines.push(`${indent(7)}$ref: ${yamlValue(media.schema.$ref)}`)
+                else if (media.schema.type) lines.push(`${indent(7)}type: ${media.schema.type}`)
+              }
+              if (media.example) lines.push(`${indent(6)}example: ${yamlValue(String(media.example))}`)
             }
-            if (media.example) lines.push(`${indent(6)}example: ${yamlValue(String(media.example))}`)
           }
         }
       }
@@ -137,13 +147,19 @@ function generatePaths(endpoints: OpenAPISpec['endpoints']): string {
           lines.push(`${indent(4)}"${res.statusCode}":`)
           lines.push(`${indent(5)}description: ${yamlValue(res.description)}`)
           if (res.content) {
-            lines.push(`${indent(5)}content:`)
-            for (const [mediaType, media] of Object.entries(res.content)) {
-              lines.push(`${indent(6)}${yamlValue(mediaType)}:`)
-              if (media.schema) {
-                lines.push(`${indent(7)}schema:`)
-                if (media.schema.$ref) lines.push(`${indent(8)}$ref: ${yamlValue(media.schema.$ref)}`)
-                else if (media.schema.type) lines.push(`${indent(8)}type: ${media.schema.type}`)
+            const hasValidContent = Object.values(res.content).some(
+              media => media.schema?.$ref ? isValidRef(media.schema.$ref) : media.schema?.type
+            )
+            if (hasValidContent) {
+              lines.push(`${indent(5)}content:`)
+              for (const [mediaType, media] of Object.entries(res.content)) {
+                if (media.schema?.$ref && !isValidRef(media.schema.$ref)) continue
+                lines.push(`${indent(6)}${yamlValue(mediaType)}:`)
+                if (media.schema) {
+                  lines.push(`${indent(7)}schema:`)
+                  if (media.schema.$ref) lines.push(`${indent(8)}$ref: ${yamlValue(media.schema.$ref)}`)
+                  else if (media.schema.type) lines.push(`${indent(8)}type: ${media.schema.type}`)
+                }
               }
             }
           }
