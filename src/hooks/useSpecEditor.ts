@@ -280,7 +280,7 @@ export function useSpecEditor() {
   }, [])
 
   const addReusableResponse = useCallback(() => {
-    const res: ReusableResponse = { id: uid(), name: '', statusCode: '200', description: '' }
+    const res: ReusableResponse = { id: uid(), name: '', description: '' }
     setSpec(prev => ({ ...prev, responses: [res, ...prev.responses] }))
     setSelectedReusableResponseId(res.id)
   }, [])
