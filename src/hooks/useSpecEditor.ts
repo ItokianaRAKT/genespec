@@ -203,9 +203,12 @@ export function useSpecEditor() {
                 i === index
                   ? {
                       ...r,
-                      content: ref
-                        ? { [mediaType]: { schema: { $ref: ref } } }
-                        : { [mediaType]: { schema: { type: 'object' } } },
+                      content: {
+                        ...r.content,
+                        [mediaType]: ref
+                          ? { schema: { $ref: ref } }
+                          : { schema: { type: 'object' } },
+                      },
                     }
                   : r
               ),
