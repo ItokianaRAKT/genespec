@@ -312,7 +312,6 @@ export function generateYaml(spec: OpenAPISpec): string {
   parts.push(generateInfo(spec.info))
   parts.push(generateServers(spec.servers))
   parts.push(generateTags(spec.tags))
-  parts.push(generateSecurity(spec.security))
   parts.push(generatePaths(spec.endpoints))
   parts.push(generateComponents(spec))
   return parts.join('\n') + '\n'
