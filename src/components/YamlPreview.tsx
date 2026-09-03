@@ -14,10 +14,13 @@ export function YamlPreview({ spec, onImport }: YamlPreviewProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editValue, setEditValue] = useState('')
   const [parseError, setParseError] = useState('')
+  const [copied, setCopied] = useState(false)
   const { confirm } = useConfirm()
 
   const handleCopy = () => {
     navigator.clipboard.writeText(yaml)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   const handleExport = () => {
@@ -71,7 +74,7 @@ export function YamlPreview({ spec, onImport }: YamlPreviewProps) {
           <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>
             Live Preview
           </span>
-          <span className="text-[10px] ml-1" style={{ color: 'var(--text-faintest)' }}>
+          <span className="text-[10px] ml-1" style={{ color: 'var(--text-muted)' }}>
             {lineCount} lines
           </span>
         </div>
@@ -97,7 +100,7 @@ export function YamlPreview({ spec, onImport }: YamlPreviewProps) {
             <>
               <button
                 onClick={handlePasteClick}
-                className="flex items-center gap-1.5 px-2.5 py-1 text-xs rounded transition-colors"
+                className="flex items-center gap-1.5 px-2.5 py-1 text-xs rounded transition-colors cursor-pointer"
                 style={{ color: 'var(--text-muted)', backgroundColor: 'var(--bg-card-solid)' }}
               >
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -105,19 +108,29 @@ export function YamlPreview({ spec, onImport }: YamlPreviewProps) {
                 </svg>
                 Paste & Import
               </button>
-              <button
-                onClick={handleCopy}
-                className="flex items-center gap-1.5 px-2.5 py-1 text-xs rounded transition-colors"
-                style={{ color: 'var(--text-muted)', backgroundColor: 'var(--bg-card-solid)' }}
-              >
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-                Copy
-              </button>
+              <div className="relative">
+                <button
+                  onClick={handleCopy}
+                  className="flex items-center gap-1.5 px-2.5 py-1 text-xs rounded transition-colors cursor-pointer"
+                  style={{ color: 'var(--text-muted)', backgroundColor: 'var(--bg-card-solid)' }}
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  Copy
+                </button>
+                {copied && (
+                  <span
+                    className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[10px] font-medium px-2 py-1 rounded whitespace-nowrap"
+                    style={{ backgroundColor: 'var(--method-get-bg)', color: 'var(--method-get)' }}
+                  >
+                    Copied!
+                  </span>
+                )}
+              </div>
               <button
                 onClick={handleExport}
-                className="flex items-center gap-1.5 px-2.5 py-1 text-xs text-white rounded transition-colors"
+                className="flex items-center gap-1.5 px-2.5 py-1 text-xs text-white rounded transition-colors cursor-pointer"
                 style={{ backgroundColor: 'var(--accent)' }}
               >
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
