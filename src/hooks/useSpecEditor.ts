@@ -10,7 +10,16 @@ function uid(): string {
 function loadSpec(): OpenAPISpec {
   try {
     const saved = localStorage.getItem('genespec-spec')
-    if (saved) return JSON.parse(saved)
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      return {
+        ...defaultSpec,
+        ...parsed,
+        responses: parsed.responses ?? defaultSpec.responses,
+        parameters: parsed.parameters ?? defaultSpec.parameters,
+        requestBodies: parsed.requestBodies ?? defaultSpec.requestBodies,
+      }
+    }
   } catch { /* ignore */ }
   return defaultSpec
 }
