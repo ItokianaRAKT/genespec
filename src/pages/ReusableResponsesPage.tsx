@@ -28,6 +28,14 @@ export function ReusableResponsesPage({
     }
   }
 
+  const handleUpdate = (id: string, field: string, value: string) => {
+    if (field === 'name') {
+      const duplicate = responses.some(r => r.id !== id && r.name === value)
+      if (duplicate) return
+    }
+    onUpdate(id, field, value)
+  }
+
   return (
     <div className="flex h-full">
       <div
@@ -88,7 +96,7 @@ export function ReusableResponsesPage({
               <input
                 className="input-field-sm"
                 value={selected.name}
-                onChange={e => onUpdate(selected.id, 'name', e.target.value)}
+                onChange={e => handleUpdate(selected.id, 'name', e.target.value)}
                 placeholder="NotFound"
               />
             </div>
