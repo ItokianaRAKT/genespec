@@ -43,6 +43,14 @@ export function SchemasPage({
     }
   }
 
+  const handleUpdate = (id: string, field: string, value: string) => {
+    if (field === 'name') {
+      const duplicate = schemas.some(s => s.id !== id && s.name === value)
+      if (duplicate) return
+    }
+    onUpdate(id, field, value)
+  }
+
   return (
     <div className="flex h-full">
       <div
@@ -106,7 +114,7 @@ export function SchemasPage({
               <input
                 className="input-field-sm"
                 value={selected.name}
-                onChange={e => onUpdate(selected.id, 'name', e.target.value)}
+                onChange={e => handleUpdate(selected.id, 'name', e.target.value)}
                 placeholder="User"
               />
             </div>

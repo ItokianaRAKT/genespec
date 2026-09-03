@@ -31,6 +31,14 @@ export function ReusableParametersPage({
     }
   }
 
+  const handleUpdate = (id: string, field: string, value: string) => {
+    if (field === 'name') {
+      const duplicate = parameters.some(p => p.id !== id && p.name === value)
+      if (duplicate) return
+    }
+    onUpdate(id, field, value)
+  }
+
   return (
     <div className="flex h-full">
       <div
@@ -98,7 +106,7 @@ export function ReusableParametersPage({
                 <input
                   className="input-field-sm"
                   value={selected.name}
-                  onChange={e => onUpdate(selected.id, 'name', e.target.value)}
+                  onChange={e => handleUpdate(selected.id, 'name', e.target.value)}
                   placeholder="limit"
                 />
               </div>
