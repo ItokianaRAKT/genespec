@@ -205,17 +205,19 @@ function generateSchemas(schemas: OpenAPISpec['schemas']): string {
       lines.push(`${indent(4)}required:`)
       for (const prop of required) lines.push(`${indent(5)}- ${yamlValue(prop.name)}`)
     }
-    lines.push(`${indent(4)}properties:`)
-    for (const prop of schema.properties) {
-      lines.push(`${indent(5)}${yamlValue(prop.name)}:`)
-      lines.push(`${indent(6)}type: ${prop.type}`)
-      if (prop.format) lines.push(`${indent(6)}format: ${yamlValue(prop.format)}`)
-      if (prop.nullable) lines.push(`${indent(6)}nullable: true`)
-      if (prop.description) lines.push(`${indent(6)}description: ${yamlValue(prop.description)}`)
-      if (prop.defaultValue) lines.push(`${indent(6)}default: ${yamlValue(prop.defaultValue)}`)
-      if (prop.enum && prop.enum.length > 0) {
-        lines.push(`${indent(6)}enum:`)
-        for (const e of prop.enum) lines.push(`${indent(7)}- ${yamlValue(e)}`)
+    if (schema.properties.length > 0) {
+      lines.push(`${indent(4)}properties:`)
+      for (const prop of schema.properties) {
+        lines.push(`${indent(5)}${yamlValue(prop.name)}:`)
+        lines.push(`${indent(6)}type: ${prop.type}`)
+        if (prop.format) lines.push(`${indent(6)}format: ${yamlValue(prop.format)}`)
+        if (prop.nullable) lines.push(`${indent(6)}nullable: true`)
+        if (prop.description) lines.push(`${indent(6)}description: ${yamlValue(prop.description)}`)
+        if (prop.defaultValue) lines.push(`${indent(6)}default: ${yamlValue(prop.defaultValue)}`)
+        if (prop.enum && prop.enum.length > 0) {
+          lines.push(`${indent(6)}enum:`)
+          for (const e of prop.enum) lines.push(`${indent(7)}- ${yamlValue(e)}`)
+        }
       }
     }
   }
