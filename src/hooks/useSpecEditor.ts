@@ -15,6 +15,12 @@ function loadSpec(): OpenAPISpec {
       return {
         ...defaultSpec,
         ...parsed,
+        info: {
+          ...defaultSpec.info,
+          ...parsed.info,
+          contact: { ...defaultSpec.info.contact, ...parsed.info?.contact },
+          license: { ...defaultSpec.info.license, ...parsed.info?.license },
+        },
         responses: parsed.responses ?? defaultSpec.responses,
         parameters: parsed.parameters ?? defaultSpec.parameters,
         requestBodies: parsed.requestBodies ?? defaultSpec.requestBodies,
