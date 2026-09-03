@@ -9,6 +9,9 @@ import { SecurityPage } from './pages/SecurityPage'
 import { TagsPage } from './pages/TagsPage'
 import { EndpointsPage } from './pages/EndpointsPage'
 import { SchemasPage } from './pages/SchemasPage'
+import { ReusableResponsesPage } from './pages/ReusableResponsesPage'
+import { ReusableParametersPage } from './pages/ReusableParametersPage'
+import { ReusableRequestBodiesPage } from './pages/ReusableRequestBodiesPage'
 
 export default function App() {
   const {
@@ -19,6 +22,12 @@ export default function App() {
     setSelectedEndpointId,
     selectedSchemaId,
     setSelectedSchemaId,
+    selectedReusableResponseId,
+    setSelectedReusableResponseId,
+    selectedReusableParameterId,
+    setSelectedReusableParameterId,
+    selectedReusableRequestBodyId,
+    setSelectedReusableRequestBodyId,
     updateInfo,
     updateContact,
     updateLicense,
@@ -47,6 +56,15 @@ export default function App() {
     addSchemaProperty,
     updateSchemaProperty,
     removeSchemaProperty,
+    addReusableResponse,
+    updateReusableResponse,
+    removeReusableResponse,
+    addReusableParameter,
+    updateReusableParameter,
+    removeReusableParameter,
+    addReusableRequestBody,
+    updateReusableRequestBody,
+    removeReusableRequestBody,
     importSpec,
   } = useSpecEditor()
 
@@ -122,6 +140,39 @@ export default function App() {
             onRemoveProperty={removeSchemaProperty}
           />
         )
+      case 'responses':
+        return (
+          <ReusableResponsesPage
+            responses={spec.responses}
+            selectedId={selectedReusableResponseId}
+            onSelect={setSelectedReusableResponseId}
+            onAdd={addReusableResponse}
+            onUpdate={updateReusableResponse}
+            onRemove={removeReusableResponse}
+          />
+        )
+      case 'parameters':
+        return (
+          <ReusableParametersPage
+            parameters={spec.parameters}
+            selectedId={selectedReusableParameterId}
+            onSelect={setSelectedReusableParameterId}
+            onAdd={addReusableParameter}
+            onUpdate={updateReusableParameter}
+            onRemove={removeReusableParameter}
+          />
+        )
+      case 'requestBodies':
+        return (
+          <ReusableRequestBodiesPage
+            requestBodies={spec.requestBodies}
+            selectedId={selectedReusableRequestBodyId}
+            onSelect={setSelectedReusableRequestBodyId}
+            onAdd={addReusableRequestBody}
+            onUpdate={updateReusableRequestBody}
+            onRemove={removeReusableRequestBody}
+          />
+        )
     }
   }
 
@@ -136,11 +187,17 @@ export default function App() {
           onSelectEndpoint={setSelectedEndpointId}
           selectedSchemaId={selectedSchemaId}
           onSelectSchema={setSelectedSchemaId}
+          selectedReusableResponseId={selectedReusableResponseId}
+          onSelectReusableResponse={setSelectedReusableResponseId}
+          selectedReusableParameterId={selectedReusableParameterId}
+          onSelectReusableParameter={setSelectedReusableParameterId}
+          selectedReusableRequestBodyId={selectedReusableRequestBodyId}
+          onSelectReusableRequestBody={setSelectedReusableRequestBodyId}
         />
         <div className="flex-1 overflow-y-auto">
           {renderPage()}
         </div>
-        <div className="w-[420px] flex-shrink-0 hidden lg:block border-l" style={{ borderColor: 'var(--border-primary)' }}>
+        <div className="w-[420px] flex-shrink-0 hidden lg:block border-l h-full" style={{ borderColor: 'var(--border-primary)' }}>
           <YamlPreview spec={spec} onImport={importSpec} />
         </div>
       </div>

@@ -99,6 +99,34 @@ export interface Schema {
   properties: SchemaProperty[]
 }
 
+export interface ReusableResponse {
+  id: string
+  name: string
+  statusCode: string
+  description: string
+  content?: Record<string, MediaType>
+}
+
+export interface ReusableParameter {
+  id: string
+  name: string
+  in: 'query' | 'path' | 'header' | 'cookie'
+  description: string
+  required: boolean
+  type: string
+  format?: string
+  defaultValue?: string
+  enum?: string[]
+}
+
+export interface ReusableRequestBody {
+  id: string
+  name: string
+  description: string
+  required: boolean
+  content: Record<string, MediaType>
+}
+
 export interface OpenAPISpec {
   info: Info
   servers: Server[]
@@ -106,6 +134,9 @@ export interface OpenAPISpec {
   security: SecurityScheme[]
   endpoints: Endpoint[]
   schemas: Schema[]
+  responses: ReusableResponse[]
+  parameters: ReusableParameter[]
+  requestBodies: ReusableRequestBody[]
 }
 
-export type SidebarSection = 'overview' | 'info' | 'servers' | 'security' | 'tags' | 'endpoints' | 'schemas'
+export type SidebarSection = 'overview' | 'info' | 'servers' | 'security' | 'tags' | 'endpoints' | 'schemas' | 'responses' | 'parameters' | 'requestBodies'

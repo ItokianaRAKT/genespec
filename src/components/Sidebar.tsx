@@ -10,6 +10,12 @@ interface SidebarProps {
   onSelectEndpoint: (id: string) => void
   selectedSchemaId: string | null
   onSelectSchema: (id: string) => void
+  selectedReusableResponseId: string | null
+  onSelectReusableResponse: (id: string) => void
+  selectedReusableParameterId: string | null
+  onSelectReusableParameter: (id: string) => void
+  selectedReusableRequestBodyId: string | null
+  onSelectReusableRequestBody: (id: string) => void
 }
 
 const methodColors: Record<string, string> = {
@@ -36,6 +42,9 @@ const sections: { key: SidebarSection; label: string; icon: string }[] = [
   { key: 'tags', label: 'Tags', icon: 'M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z' },
   { key: 'endpoints', label: 'Endpoints', icon: 'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1' },
   { key: 'schemas', label: 'Schemas', icon: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4' },
+  { key: 'responses', label: 'Responses', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
+  { key: 'parameters', label: 'Parameters', icon: 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4' },
+  { key: 'requestBodies', label: 'Request Bodies', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
 ]
 
 export function Sidebar({
@@ -46,6 +55,12 @@ export function Sidebar({
   onSelectEndpoint,
   selectedSchemaId,
   onSelectSchema,
+  selectedReusableResponseId,
+  onSelectReusableResponse,
+  selectedReusableParameterId,
+  onSelectReusableParameter,
+  selectedReusableRequestBodyId,
+  onSelectReusableRequestBody,
 }: SidebarProps) {
   const { theme, toggleTheme } = useTheme()
 
@@ -156,9 +171,105 @@ export function Sidebar({
                   <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
                 <span className="truncate">{s.name || 'Unnamed'}</span>
-                <span className="ml-auto text-[10px]" style={{ color: 'var(--text-faintest)' }}>
+                <span className="ml-auto text-[10px]" style={{ color: 'var(--text-muted)' }}>
                   {s.properties.length}
                 </span>
+              </button>
+            ))}
+          </>
+        )}
+
+        {spec.responses.length > 0 && (
+          <>
+            <div className="pt-4 pb-1 px-2">
+              <span
+                className="text-[10px] font-semibold uppercase tracking-widest"
+                style={{ color: 'var(--text-faint)' }}
+              >
+                Responses
+              </span>
+            </div>
+            {spec.responses.map(r => (
+              <button
+                key={r.id}
+                onClick={() => { onSectionChange('responses'); onSelectReusableResponse(r.id) }}
+                className="w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-left text-sm transition-colors"
+                style={{
+                  backgroundColor: selectedReusableResponseId === r.id ? 'var(--bg-active)' : 'transparent',
+                  color: selectedReusableResponseId === r.id ? 'var(--text-heading)' : 'var(--text-secondary)',
+                }}
+              >
+                <span
+                  className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded"
+                  style={{
+                    backgroundColor: r.statusCode.startsWith('2') ? 'var(--method-get-bg)' : r.statusCode.startsWith('4') ? 'var(--method-delete-bg)' : 'var(--method-default-bg)',
+                    color: r.statusCode.startsWith('2') ? 'var(--method-get)' : r.statusCode.startsWith('4') ? 'var(--method-delete)' : 'var(--method-default)',
+                  }}
+                >
+                  {r.statusCode || '---'}
+                </span>
+                <span className="truncate">{r.name || 'Unnamed'}</span>
+              </button>
+            ))}
+          </>
+        )}
+
+        {spec.parameters.length > 0 && (
+          <>
+            <div className="pt-4 pb-1 px-2">
+              <span
+                className="text-[10px] font-semibold uppercase tracking-widest"
+                style={{ color: 'var(--text-faint)' }}
+              >
+                Parameters
+              </span>
+            </div>
+            {spec.parameters.map(p => (
+              <button
+                key={p.id}
+                onClick={() => { onSectionChange('parameters'); onSelectReusableParameter(p.id) }}
+                className="w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-left text-sm transition-colors"
+                style={{
+                  backgroundColor: selectedReusableParameterId === p.id ? 'var(--bg-active)' : 'transparent',
+                  color: selectedReusableParameterId === p.id ? 'var(--text-heading)' : 'var(--text-secondary)',
+                }}
+              >
+                <span
+                  className="text-[10px] font-mono px-1.5 py-0.5 rounded"
+                  style={{ backgroundColor: 'var(--bg-badge)', color: 'var(--text-muted)' }}
+                >
+                  {p.in}
+                </span>
+                <span className="truncate">{p.name || 'Unnamed'}</span>
+              </button>
+            ))}
+          </>
+        )}
+
+        {spec.requestBodies.length > 0 && (
+          <>
+            <div className="pt-4 pb-1 px-2">
+              <span
+                className="text-[10px] font-semibold uppercase tracking-widest"
+                style={{ color: 'var(--text-faint)' }}
+              >
+                Request Bodies
+              </span>
+            </div>
+            {spec.requestBodies.map(b => (
+              <button
+                key={b.id}
+                onClick={() => { onSectionChange('requestBodies'); onSelectReusableRequestBody(b.id) }}
+                className="w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-left text-sm transition-colors"
+                style={{
+                  backgroundColor: selectedReusableRequestBodyId === b.id ? 'var(--bg-active)' : 'transparent',
+                  color: selectedReusableRequestBodyId === b.id ? 'var(--text-heading)' : 'var(--text-secondary)',
+                }}
+              >
+                <svg className="w-4 h-4 flex-shrink-0 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span className="truncate">{b.name || 'Unnamed'}</span>
               </button>
             ))}
           </>

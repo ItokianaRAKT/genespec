@@ -154,7 +154,7 @@ export function YamlPreview({ spec, onImport }: YamlPreviewProps) {
           </div>
         ) : (
           <pre
-            className="p-4 text-[12px] leading-relaxed font-mono whitespace-pre"
+            className="p-4 text-[12px] leading-relaxed font-mono whitespace-pre overflow-x-auto"
             style={{ color: 'var(--yaml-text)' }}
           >
             {yaml}

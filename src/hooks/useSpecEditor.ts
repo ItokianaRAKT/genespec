@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
-import type { OpenAPISpec, SidebarSection, Server, SecurityScheme, Tag, Endpoint, Parameter, Response, Schema, SchemaProperty } from '../models/openapi'
+import type { OpenAPISpec, SidebarSection, Server, SecurityScheme, Tag, Endpoint, Parameter, Response, Schema, SchemaProperty, ReusableResponse, ReusableParameter, ReusableRequestBody } from '../models/openapi'
 import { defaultSpec } from '../services/mockData'
 import { parseYamlToSpec } from '../services/yamlParser'
 
@@ -10,7 +10,16 @@ function uid(): string {
 function loadSpec(): OpenAPISpec {
   try {
     const saved = localStorage.getItem('genespec-spec')
-    if (saved) return JSON.parse(saved)
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      return {
+        ...defaultSpec,
+        ...parsed,
+        responses: parsed.responses ?? defaultSpec.responses,
+        parameters: parsed.parameters ?? defaultSpec.parameters,
+        requestBodies: parsed.requestBodies ?? defaultSpec.requestBodies,
+      }
+    }
   } catch { /* ignore */ }
   return defaultSpec
 }
@@ -28,6 +37,9 @@ export function useSpecEditor() {
   const [activeSection, setActiveSection] = useState<SidebarSection>(loadActiveSection)
   const [selectedEndpointId, setSelectedEndpointId] = useState<string | null>(null)
   const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null)
+  const [selectedReusableResponseId, setSelectedReusableResponseId] = useState<string | null>(null)
+  const [selectedReusableParameterId, setSelectedReusableParameterId] = useState<string | null>(null)
+  const [selectedReusableRequestBodyId, setSelectedReusableRequestBodyId] = useState<string | null>(null)
 
   useEffect(() => {
     localStorage.setItem('genespec-spec', JSON.stringify(spec))
@@ -264,6 +276,60 @@ export function useSpecEditor() {
     }))
   }, [])
 
+  const addReusableResponse = useCallback(() => {
+    const res: ReusableResponse = { id: uid(), name: '', statusCode: '200', description: '' }
+    setSpec(prev => ({ ...prev, responses: [res, ...prev.responses] }))
+    setSelectedReusableResponseId(res.id)
+  }, [])
+
+  const updateReusableResponse = useCallback((id: string, field: string, value: string) => {
+    setSpec(prev => ({
+      ...prev,
+      responses: prev.responses.map(r => r.id === id ? { ...r, [field]: value } : r),
+    }))
+  }, [])
+
+  const removeReusableResponse = useCallback((id: string) => {
+    setSpec(prev => ({ ...prev, responses: prev.responses.filter(r => r.id !== id) }))
+    if (selectedReusableResponseId === id) setSelectedReusableResponseId(null)
+  }, [selectedReusableResponseId])
+
+  const addReusableParameter = useCallback(() => {
+    const param: ReusableParameter = { id: uid(), name: '', in: 'query', description: '', required: false, type: 'string' }
+    setSpec(prev => ({ ...prev, parameters: [param, ...prev.parameters] }))
+    setSelectedReusableParameterId(param.id)
+  }, [])
+
+  const updateReusableParameter = useCallback((id: string, field: string, value: unknown) => {
+    setSpec(prev => ({
+      ...prev,
+      parameters: prev.parameters.map(p => p.id === id ? { ...p, [field]: value } : p),
+    }))
+  }, [])
+
+  const removeReusableParameter = useCallback((id: string) => {
+    setSpec(prev => ({ ...prev, parameters: prev.parameters.filter(p => p.id !== id) }))
+    if (selectedReusableParameterId === id) setSelectedReusableParameterId(null)
+  }, [selectedReusableParameterId])
+
+  const addReusableRequestBody = useCallback(() => {
+    const body: ReusableRequestBody = { id: uid(), name: '', description: '', required: false, content: {} }
+    setSpec(prev => ({ ...prev, requestBodies: [body, ...prev.requestBodies] }))
+    setSelectedReusableRequestBodyId(body.id)
+  }, [])
+
+  const updateReusableRequestBody = useCallback((id: string, field: string, value: unknown) => {
+    setSpec(prev => ({
+      ...prev,
+      requestBodies: prev.requestBodies.map(b => b.id === id ? { ...b, [field]: value } : b),
+    }))
+  }, [])
+
+  const removeReusableRequestBody = useCallback((id: string) => {
+    setSpec(prev => ({ ...prev, requestBodies: prev.requestBodies.filter(b => b.id !== id) }))
+    if (selectedReusableRequestBodyId === id) setSelectedReusableRequestBodyId(null)
+  }, [selectedReusableRequestBodyId])
+
   const importSpec = useCallback((yamlContent: string) => {
     const parsed = parseYamlToSpec(yamlContent)
     setSpec(parsed)
@@ -277,6 +343,12 @@ export function useSpecEditor() {
     setSelectedEndpointId,
     selectedSchemaId,
     setSelectedSchemaId,
+    selectedReusableResponseId,
+    setSelectedReusableResponseId,
+    selectedReusableParameterId,
+    setSelectedReusableParameterId,
+    selectedReusableRequestBodyId,
+    setSelectedReusableRequestBodyId,
     updateInfo,
     updateContact,
     updateLicense,
@@ -305,6 +377,15 @@ export function useSpecEditor() {
     addSchemaProperty,
     updateSchemaProperty,
     removeSchemaProperty,
+    addReusableResponse,
+    updateReusableResponse,
+    removeReusableResponse,
+    addReusableParameter,
+    updateReusableParameter,
+    removeReusableParameter,
+    addReusableRequestBody,
+    updateReusableRequestBody,
+    removeReusableRequestBody,
     importSpec,
   }
 }
