@@ -53,15 +53,9 @@ export function ReusableResponsesPage({
                 color: selectedId === r.id ? 'var(--text-heading)' : 'var(--text-secondary)',
               }}
             >
-              <span
-                className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded"
-                style={{
-                  backgroundColor: r.statusCode.startsWith('2') ? 'var(--method-get-bg)' : r.statusCode.startsWith('4') ? 'var(--method-delete-bg)' : 'var(--method-default-bg)',
-                  color: r.statusCode.startsWith('2') ? 'var(--method-get)' : r.statusCode.startsWith('4') ? 'var(--method-delete)' : 'var(--method-default)',
-                }}
-              >
-                {r.statusCode || '---'}
-              </span>
+              <svg className="w-4 h-4 flex-shrink-0 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
               <span className="truncate">{r.name || 'Unnamed'}</span>
             </button>
           ))}
@@ -89,25 +83,14 @@ export function ReusableResponsesPage({
               </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--text-muted)' }}>Name</label>
-                <input
-                  className="input-field-sm"
-                  value={selected.name}
-                  onChange={e => onUpdate(selected.id, 'name', e.target.value)}
-                  placeholder="NotFound"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--text-muted)' }}>Status Code</label>
-                <input
-                  className="input-field-sm"
-                  value={selected.statusCode}
-                  onChange={e => onUpdate(selected.id, 'statusCode', e.target.value)}
-                  placeholder="404"
-                />
-              </div>
+            <div>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--text-muted)' }}>Name</label>
+              <input
+                className="input-field-sm"
+                value={selected.name}
+                onChange={e => onUpdate(selected.id, 'name', e.target.value)}
+                placeholder="NotFound"
+              />
             </div>
 
             <div>
