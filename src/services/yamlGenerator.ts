@@ -80,7 +80,9 @@ function generatePaths(endpoints: OpenAPISpec['endpoints']): string {
     grouped[ep.path].push(ep)
   }
 
-  for (const [path, eps] of Object.entries(grouped)) {
+  const pathEntries = Object.entries(grouped)
+  for (let i = 0; i < pathEntries.length; i++) {
+    const [path, eps] = pathEntries[i]
     lines.push(`${indent(1)}${yamlValue(path)}:`)
     for (const ep of eps) {
       lines.push(`${indent(2)}${ep.method}:`)
@@ -147,6 +149,9 @@ function generatePaths(endpoints: OpenAPISpec['endpoints']): string {
           }
         }
       }
+    }
+    if (i < pathEntries.length - 1) {
+      lines.push('')
     }
   }
   return lines.join('\n')
