@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import type { SidebarSection } from '../models/openapi'
 import type { OpenAPISpec } from '../models/openapi'
 import { useTheme } from '../contexts/ThemeContext'
@@ -63,6 +64,24 @@ export function Sidebar({
   onSelectReusableRequestBody,
 }: SidebarProps) {
   const { theme, toggleTheme } = useTheme()
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set())
+
+  const toggleSection = (key: string) => {
+    setExpandedSections(prev => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  }
+
+  useEffect(() => {
+    setExpandedSections(prev => {
+      const next = new Set(prev)
+      next.add(activeSection)
+      return next
+    })
+  }, [activeSection])
 
   return (
     <div
@@ -114,19 +133,34 @@ export function Sidebar({
 
         {spec.endpoints.length > 0 && (
           <>
-            <div className="pt-4 pb-1 px-2">
-              <span
-                className="text-[10px] font-semibold uppercase tracking-widest"
-                style={{ color: 'var(--text-faint)' }}
+            <button
+              onClick={() => { toggleSection('endpoints'); onSectionChange('endpoints') }}
+              className="w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-left text-sm transition-colors"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              <svg
+                className="w-3 h-3 flex-shrink-0 transition-transform duration-150"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+                style={{ transform: expandedSections.has('endpoints') ? 'rotate(90deg)' : 'rotate(0deg)' }}
               >
-                Endpoints
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+              <span>Endpoints</span>
+              <span
+                className="ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded"
+                style={{ backgroundColor: 'var(--bg-badge)', color: 'var(--text-muted)' }}
+              >
+                {spec.endpoints.length}
               </span>
-            </div>
-            {spec.endpoints.map(ep => (
+            </button>
+            {expandedSections.has('endpoints') && spec.endpoints.map(ep => (
               <button
                 key={ep.id}
                 onClick={() => { onSectionChange('endpoints'); onSelectEndpoint(ep.id) }}
-                className="w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-left text-sm transition-colors"
+                className="w-full flex items-center gap-2 pl-7 pr-3 py-1.5 rounded-md text-left text-sm transition-colors"
                 style={{
                   backgroundColor: selectedEndpointId === ep.id ? 'var(--bg-active)' : 'transparent',
                   color: selectedEndpointId === ep.id ? 'var(--text-heading)' : 'var(--text-secondary)',
@@ -149,19 +183,34 @@ export function Sidebar({
 
         {spec.schemas.length > 0 && (
           <>
-            <div className="pt-4 pb-1 px-2">
-              <span
-                className="text-[10px] font-semibold uppercase tracking-widest"
-                style={{ color: 'var(--text-faint)' }}
+            <button
+              onClick={() => { toggleSection('schemas'); onSectionChange('schemas') }}
+              className="w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-left text-sm transition-colors"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              <svg
+                className="w-3 h-3 flex-shrink-0 transition-transform duration-150"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+                style={{ transform: expandedSections.has('schemas') ? 'rotate(90deg)' : 'rotate(0deg)' }}
               >
-                Schemas
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+              <span>Schemas</span>
+              <span
+                className="ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded"
+                style={{ backgroundColor: 'var(--bg-badge)', color: 'var(--text-muted)' }}
+              >
+                {spec.schemas.length}
               </span>
-            </div>
-            {spec.schemas.map(s => (
+            </button>
+            {expandedSections.has('schemas') && spec.schemas.map(s => (
               <button
                 key={s.id}
                 onClick={() => { onSectionChange('schemas'); onSelectSchema(s.id) }}
-                className="w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-left text-sm transition-colors"
+                className="w-full flex items-center gap-2 pl-7 pr-3 py-1.5 rounded-md text-left text-sm transition-colors"
                 style={{
                   backgroundColor: selectedSchemaId === s.id ? 'var(--bg-active)' : 'transparent',
                   color: selectedSchemaId === s.id ? 'var(--text-heading)' : 'var(--text-secondary)',
@@ -181,19 +230,34 @@ export function Sidebar({
 
         {spec.responses.length > 0 && (
           <>
-            <div className="pt-4 pb-1 px-2">
-              <span
-                className="text-[10px] font-semibold uppercase tracking-widest"
-                style={{ color: 'var(--text-faint)' }}
+            <button
+              onClick={() => { toggleSection('responses'); onSectionChange('responses') }}
+              className="w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-left text-sm transition-colors"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              <svg
+                className="w-3 h-3 flex-shrink-0 transition-transform duration-150"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+                style={{ transform: expandedSections.has('responses') ? 'rotate(90deg)' : 'rotate(0deg)' }}
               >
-                Responses
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+              <span>Responses</span>
+              <span
+                className="ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded"
+                style={{ backgroundColor: 'var(--bg-badge)', color: 'var(--text-muted)' }}
+              >
+                {spec.responses.length}
               </span>
-            </div>
-            {spec.responses.map(r => (
+            </button>
+            {expandedSections.has('responses') && spec.responses.map(r => (
               <button
                 key={r.id}
                 onClick={() => { onSectionChange('responses'); onSelectReusableResponse(r.id) }}
-                className="w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-left text-sm transition-colors"
+                className="w-full flex items-center gap-2 pl-7 pr-3 py-1.5 rounded-md text-left text-sm transition-colors"
                 style={{
                   backgroundColor: selectedReusableResponseId === r.id ? 'var(--bg-active)' : 'transparent',
                   color: selectedReusableResponseId === r.id ? 'var(--text-heading)' : 'var(--text-secondary)',
@@ -216,19 +280,34 @@ export function Sidebar({
 
         {spec.parameters.length > 0 && (
           <>
-            <div className="pt-4 pb-1 px-2">
-              <span
-                className="text-[10px] font-semibold uppercase tracking-widest"
-                style={{ color: 'var(--text-faint)' }}
+            <button
+              onClick={() => { toggleSection('parameters'); onSectionChange('parameters') }}
+              className="w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-left text-sm transition-colors"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              <svg
+                className="w-3 h-3 flex-shrink-0 transition-transform duration-150"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+                style={{ transform: expandedSections.has('parameters') ? 'rotate(90deg)' : 'rotate(0deg)' }}
               >
-                Parameters
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+              <span>Parameters</span>
+              <span
+                className="ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded"
+                style={{ backgroundColor: 'var(--bg-badge)', color: 'var(--text-muted)' }}
+              >
+                {spec.parameters.length}
               </span>
-            </div>
-            {spec.parameters.map(p => (
+            </button>
+            {expandedSections.has('parameters') && spec.parameters.map(p => (
               <button
                 key={p.id}
                 onClick={() => { onSectionChange('parameters'); onSelectReusableParameter(p.id) }}
-                className="w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-left text-sm transition-colors"
+                className="w-full flex items-center gap-2 pl-7 pr-3 py-1.5 rounded-md text-left text-sm transition-colors"
                 style={{
                   backgroundColor: selectedReusableParameterId === p.id ? 'var(--bg-active)' : 'transparent',
                   color: selectedReusableParameterId === p.id ? 'var(--text-heading)' : 'var(--text-secondary)',
@@ -248,19 +327,34 @@ export function Sidebar({
 
         {spec.requestBodies.length > 0 && (
           <>
-            <div className="pt-4 pb-1 px-2">
-              <span
-                className="text-[10px] font-semibold uppercase tracking-widest"
-                style={{ color: 'var(--text-faint)' }}
+            <button
+              onClick={() => { toggleSection('requestBodies'); onSectionChange('requestBodies') }}
+              className="w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-left text-sm transition-colors"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              <svg
+                className="w-3 h-3 flex-shrink-0 transition-transform duration-150"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+                style={{ transform: expandedSections.has('requestBodies') ? 'rotate(90deg)' : 'rotate(0deg)' }}
               >
-                Request Bodies
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+              <span>Request Bodies</span>
+              <span
+                className="ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded"
+                style={{ backgroundColor: 'var(--bg-badge)', color: 'var(--text-muted)' }}
+              >
+                {spec.requestBodies.length}
               </span>
-            </div>
-            {spec.requestBodies.map(b => (
+            </button>
+            {expandedSections.has('requestBodies') && spec.requestBodies.map(b => (
               <button
                 key={b.id}
                 onClick={() => { onSectionChange('requestBodies'); onSelectReusableRequestBody(b.id) }}
-                className="w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-left text-sm transition-colors"
+                className="w-full flex items-center gap-2 pl-7 pr-3 py-1.5 rounded-md text-left text-sm transition-colors"
                 style={{
                   backgroundColor: selectedReusableRequestBodyId === b.id ? 'var(--bg-active)' : 'transparent',
                   color: selectedReusableRequestBodyId === b.id ? 'var(--text-heading)' : 'var(--text-secondary)',
