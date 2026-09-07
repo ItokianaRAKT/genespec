@@ -151,7 +151,7 @@ export function EndpointsPage({
               </button>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--text-muted)' }}>Method</label>
                 <select
@@ -256,7 +256,7 @@ export function EndpointsPage({
                           </svg>
                         </button>
                       </div>
-                      <div className="grid grid-cols-2 gap-2 mb-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
                         <input
                           className="input-field-sm"
                           value={param.name}
@@ -271,7 +271,7 @@ export function EndpointsPage({
                           {paramIns.map(i => <option key={i} value={i}>{i}</option>)}
                         </select>
                       </div>
-                      <div className="grid grid-cols-2 gap-2 mb-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
                         <select
                           className="input-field-sm"
                           value={param.type}
@@ -386,7 +386,7 @@ export function EndpointsPage({
                           </svg>
                         </button>
                       </div>
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         <input
                           className="input-field-sm"
                           value={res.statusCode}

@@ -20,7 +20,7 @@ export function OverviewPage({ spec }: Props) {
   const total = spec.endpoints.length || 1
 
   return (
-    <div className="p-8 space-y-8 max-w-4xl">
+    <div className="p-4 sm:p-6 md:p-8 space-y-8 max-w-4xl">
       <div>
         <h1 className="text-3xl font-bold" style={{ color: 'var(--text-heading)' }}>
           {spec.info.title}
@@ -28,7 +28,7 @@ export function OverviewPage({ spec }: Props) {
         <p className="mt-1" style={{ color: 'var(--text-muted)' }}>{spec.info.description}</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {[
           { label: 'Endpoints', value: spec.endpoints.length },
           { label: 'Schemas', value: spec.schemas.length },

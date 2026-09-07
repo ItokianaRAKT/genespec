@@ -13,7 +13,7 @@ interface Props {
 
 export function InfoPage({ info, onUpdate, onContactUpdate, onLicenseUpdate }: Props) {
   return (
-    <div className="p-8 space-y-8 max-w-4xl">
+    <div className="p-4 sm:p-6 md:p-8 space-y-8 max-w-4xl">
       <div>
         <h1 className="text-3xl font-bold" style={{ color: 'var(--text-heading)' }}>API Information</h1>
         <p className="mt-1" style={{ color: 'var(--text-muted)' }}>Configure your API details</p>

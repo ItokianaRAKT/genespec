@@ -171,7 +171,7 @@ export function SchemasPage({
                           </svg>
                         </button>
                       </div>
-                      <div className="grid grid-cols-2 gap-2 mb-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
                         <input
                           className="input-field-sm"
                           value={prop.name}
@@ -186,7 +186,7 @@ export function SchemasPage({
                           {propTypes.map(t => <option key={t} value={t}>{t}</option>)}
                         </select>
                       </div>
-                      <div className="grid grid-cols-2 gap-2 mb-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
                         <input
                           className="input-field-sm"
                           value={prop.format || ''}
