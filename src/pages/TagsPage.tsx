@@ -18,8 +18,8 @@ export function TagsPage({ tags, onAdd, onUpdate, onRemove }: Props) {
     }
   }
   return (
-    <div className="p-8 space-y-8 max-w-4xl">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 md:p-8 space-y-8 max-w-4xl">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold" style={{ color: 'var(--text-heading)' }}>Tags</h1>
           <p className="mt-1" style={{ color: 'var(--text-muted)' }}>Manage API tags</p>

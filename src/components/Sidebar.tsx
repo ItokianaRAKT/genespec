@@ -17,6 +17,7 @@ interface SidebarProps {
   onSelectReusableParameter: (id: string) => void
   selectedReusableRequestBodyId: string | null
   onSelectReusableRequestBody: (id: string) => void
+  onClose?: () => void
 }
 
 const methodColors: Record<string, string> = {
@@ -62,6 +63,7 @@ export function Sidebar({
   onSelectReusableParameter,
   selectedReusableRequestBodyId,
   onSelectReusableRequestBody,
+  onClose,
 }: SidebarProps) {
   const { theme, toggleTheme } = useTheme()
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set())
@@ -81,7 +83,7 @@ export function Sidebar({
       style={{ backgroundColor: 'var(--bg-sidebar)', borderRight: '1px solid var(--border-primary)' }}
     >
       <div
-        className="px-5 py-5"
+        className="px-5 py-5 flex items-center justify-between"
         style={{ borderBottom: '1px solid var(--border-primary)' }}
       >
         <div className="flex items-center gap-2.5">
@@ -95,6 +97,18 @@ export function Sidebar({
           </div>
           <span className="text-lg font-bold tracking-tight" style={{ color: 'var(--text-heading)' }}>GeneSpec</span>
         </div>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="lg:hidden p-1 rounded-md"
+            style={{ color: 'var(--text-muted)' }}
+            aria-label="Close menu"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto py-3 px-3 space-y-1">
