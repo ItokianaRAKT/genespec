@@ -2,6 +2,7 @@ import { useSpecEditor } from './hooks/useSpecEditor'
 import { Sidebar } from './components/Sidebar'
 import { YamlPreview } from './components/YamlPreview'
 import { ConfirmProvider } from './components/ConfirmContext'
+import type { SidebarSection } from './models/openapi'
 import { OverviewPage } from './pages/OverviewPage'
 import { InfoPage } from './pages/InfoPage'
 import { ServersPage } from './pages/ServersPage'
@@ -13,7 +14,10 @@ import { ReusableResponsesPage } from './pages/ReusableResponsesPage'
 import { ReusableParametersPage } from './pages/ReusableParametersPage'
 import { ReusableRequestBodiesPage } from './pages/ReusableRequestBodiesPage'
 
+import { useState } from 'react'
+
 export default function App() {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const {
     spec,
     activeSection,
@@ -67,6 +71,11 @@ export default function App() {
     removeReusableRequestBody,
     importSpec,
   } = useSpecEditor()
+
+  const handleSectionChange = (section: SidebarSection) => {
+    setActiveSection(section)
+    setSidebarOpen(false)
+  }
 
   const renderPage = () => {
     switch (activeSection) {
@@ -179,21 +188,44 @@ export default function App() {
   return (
     <ConfirmProvider>
       <div className="flex h-screen overflow-hidden" style={{ backgroundColor: 'var(--bg-app)' }}>
-        <Sidebar
-          spec={spec}
-          activeSection={activeSection}
-          onSectionChange={setActiveSection}
-          selectedEndpointId={selectedEndpointId}
-          onSelectEndpoint={setSelectedEndpointId}
-          selectedSchemaId={selectedSchemaId}
-          onSelectSchema={setSelectedSchemaId}
-          selectedReusableResponseId={selectedReusableResponseId}
-          onSelectReusableResponse={setSelectedReusableResponseId}
-          selectedReusableParameterId={selectedReusableParameterId}
-          onSelectReusableParameter={setSelectedReusableParameterId}
-          selectedReusableRequestBodyId={selectedReusableRequestBodyId}
-          onSelectReusableRequestBody={setSelectedReusableRequestBodyId}
-        />
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg"
+          style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-primary)', color: 'var(--text-heading)' }}
+          aria-label="Open menu"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        {sidebarOpen && (
+          <div
+            className="lg:hidden fixed inset-0 z-40 bg-black/50"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
+        <div
+          className={`fixed inset-y-0 left-0 z-50 transform transition-transform duration-200 lg:relative lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        >
+          <Sidebar
+            spec={spec}
+            activeSection={activeSection}
+            onSectionChange={handleSectionChange}
+            selectedEndpointId={selectedEndpointId}
+            onSelectEndpoint={(id) => { setSelectedEndpointId(id); setSidebarOpen(false) }}
+            selectedSchemaId={selectedSchemaId}
+            onSelectSchema={(id) => { setSelectedSchemaId(id); setSidebarOpen(false) }}
+            selectedReusableResponseId={selectedReusableResponseId}
+            onSelectReusableResponse={(id) => { setSelectedReusableResponseId(id); setSidebarOpen(false) }}
+            selectedReusableParameterId={selectedReusableParameterId}
+            onSelectReusableParameter={(id) => { setSelectedReusableParameterId(id); setSidebarOpen(false) }}
+            selectedReusableRequestBodyId={selectedReusableRequestBodyId}
+            onSelectReusableRequestBody={(id) => { setSelectedReusableRequestBodyId(id); setSidebarOpen(false) }}
+          />
+        </div>
+
         <div className="flex-1 overflow-y-auto">
           {renderPage()}
         </div>
