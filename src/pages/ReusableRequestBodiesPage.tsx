@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { ReusableRequestBody } from '../models/openapi'
 import { useConfirm } from '../components/ConfirmContext'
 
@@ -20,6 +21,7 @@ export function ReusableRequestBodiesPage({
 }: Props) {
   const selected = requestBodies.find(b => b.id === selectedId)
   const { confirm } = useConfirm()
+  const [mobileShowDetail, setMobileShowDetail] = useState(false)
 
   const handleRemove = async (id: string, name: string) => {
     const confirmed = await confirm(`Delete request body "${name || 'untitled'}"?`)
@@ -37,9 +39,9 @@ export function ReusableRequestBodiesPage({
   }
 
   return (
-    <div className="flex h-full">
+    <div className="flex flex-col md:flex-row h-full">
       <div
-        className="w-72 flex-shrink-0 overflow-y-auto border-r"
+        className={`w-full md:w-72 flex-shrink-0 overflow-y-auto border-r ${mobileShowDetail ? 'hidden md:block' : 'block'}`}
         style={{ borderColor: 'var(--border-primary)' }}
       >
         <div className="p-4" style={{ borderBottom: '1px solid var(--border-primary)' }}>
@@ -54,7 +56,7 @@ export function ReusableRequestBodiesPage({
           {requestBodies.map(b => (
             <button
               key={b.id}
-              onClick={() => onSelect(b.id)}
+              onClick={() => { onSelect(b.id); setMobileShowDetail(true) }}
               className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-left text-sm transition-colors"
               style={{
                 backgroundColor: selectedId === b.id ? 'var(--bg-active)' : 'transparent',
@@ -70,7 +72,7 @@ export function ReusableRequestBodiesPage({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6">
+      <div className={`flex-1 overflow-y-auto p-4 md:p-6 ${mobileShowDetail ? 'block' : 'hidden md:block'}`}>
         {!selected ? (
           <div className="flex items-center justify-center h-full">
             <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Select a request body to edit</p>
@@ -78,7 +80,18 @@ export function ReusableRequestBodiesPage({
         ) : (
           <div className="space-y-6 max-w-2xl">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold" style={{ color: 'var(--text-heading)' }}>Edit Request Body</h2>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setMobileShowDetail(false)}
+                  className="md:hidden p-1 rounded-md"
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <h2 className="text-lg font-semibold" style={{ color: 'var(--text-heading)' }}>Edit Request Body</h2>
+              </div>
               <button
                 onClick={() => handleRemove(selected.id, selected.name)}
                 className="btn-small"

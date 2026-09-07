@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { Endpoint } from '../models/openapi'
 import { useConfirm } from '../components/ConfirmContext'
 
@@ -55,6 +56,7 @@ export function EndpointsPage({
 }: Props) {
   const selected = endpoints.find(e => e.id === selectedEndpointId)
   const { confirm } = useConfirm()
+  const [mobileShowDetail, setMobileShowDetail] = useState(false)
 
   const handleRemoveEndpoint = async (id: string, path: string, method: string) => {
     const confirmed = await confirm(`Delete endpoint ${method} ${path || '/'}?`)
@@ -78,9 +80,9 @@ export function EndpointsPage({
   }
 
   return (
-    <div className="flex h-full">
+    <div className="flex flex-col md:flex-row h-full">
       <div
-        className="w-72 flex-shrink-0 overflow-y-auto border-r"
+        className={`w-full md:w-72 flex-shrink-0 overflow-y-auto border-r ${mobileShowDetail ? 'hidden md:block' : 'block'}`}
         style={{ borderColor: 'var(--border-primary)' }}
       >
         <div className="p-4" style={{ borderBottom: '1px solid var(--border-primary)' }}>
@@ -95,7 +97,7 @@ export function EndpointsPage({
           {endpoints.map(ep => (
             <button
               key={ep.id}
-              onClick={() => onSelectEndpoint(ep.id)}
+              onClick={() => { onSelectEndpoint(ep.id); setMobileShowDetail(true) }}
               className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-left text-sm transition-colors"
               style={{
                 backgroundColor: selectedEndpointId === ep.id ? 'var(--bg-active)' : 'transparent',
@@ -117,7 +119,7 @@ export function EndpointsPage({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6">
+      <div className={`flex-1 overflow-y-auto p-4 md:p-6 ${mobileShowDetail ? 'block' : 'hidden md:block'}`}>
         {!selected ? (
           <div className="flex items-center justify-center h-full">
             <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Select an endpoint to edit</p>
@@ -125,7 +127,18 @@ export function EndpointsPage({
         ) : (
           <div className="space-y-6 max-w-2xl">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold" style={{ color: 'var(--text-heading)' }}>Edit Endpoint</h2>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setMobileShowDetail(false)}
+                  className="md:hidden p-1 rounded-md"
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <h2 className="text-lg font-semibold" style={{ color: 'var(--text-heading)' }}>Edit Endpoint</h2>
+              </div>
               <button
                 onClick={() => handleRemoveEndpoint(selected.id, selected.path, selected.method)}
                 className="btn-small"
